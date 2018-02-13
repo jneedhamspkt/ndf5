@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\External\TinyIoC\src\TinyIoC\TinyIoC.cs">
+      <Link>TinyIoC.cs</Link>
+    </Compile>
+  </ItemGroup>
+</Project>
