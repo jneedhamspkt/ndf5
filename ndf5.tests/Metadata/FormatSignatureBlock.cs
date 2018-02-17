@@ -50,5 +50,33 @@ namespace ndf5.tests.Metadata
                 "Incorrect RootGroupSymbolTableVersion"); 
 
         }
+
+        [Test, Sequential]
+        public void Test_Bad_Data(
+            [Range(0,7)][Values(11)]int aCorruptByte)
+        {
+            byte[]
+                fData = new byte[]{ 137,72,68,70,13,10,26,10,0,0,0,0};
+
+            fData[aCorruptByte]++;
+
+            //Arrange
+            Stream
+                fTestData = new MemoryStream(fData); 
+
+            //Act
+
+            ndf5.Metadata.FormatSignatureAndVersionInfo
+                fTest;
+
+            bool
+                fRead = ndf5.Metadata.FormatSignatureAndVersionInfo.TryRead(
+                    fTestData, out fTest);
+
+            //Asset
+            Assert.That(fRead, Is.False, "TryRead Should have Failed");
+            Assert.That(fTest, Is.Null, "Non Null Ouput");
+
+        }
     }
 }
