@@ -6,7 +6,7 @@ namespace ndf5
     /// <summary>
     /// Information about the streams provided to to a <see cref="T:ndf5.Hdf5File"/>
     /// </summary>
-    public sealed class StreamInfo
+    internal sealed class StreamInfo
     {
         /// <summary>
         /// True if this File can be written to;

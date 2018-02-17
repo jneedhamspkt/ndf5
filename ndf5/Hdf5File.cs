@@ -12,16 +12,53 @@ namespace ndf5
         /// Pesristantly avlaible data in this file
         /// </summary>
         private readonly TinyIoCContainer
-            FileData = new TinyIoCContainer();
+            mrFileData = new TinyIoCContainer();
 
-        public StreamInfo
-            StreamInfo;
-
+        /// <summary>
+        /// Gets the stream info.
+        /// </summary>
+        /// <value>The stream info.</value>
+        internal StreamInfo
+            StreamInfo => mrFileData.Resolve(
+                typeof(StreamInfo),
+                ResolveOptions.Default) as StreamInfo;
+        
+        /// <summary>
+        /// Gets the format signature and version info.
+        /// </summary>
+        /// <value>The format signature and version info.</value>
         public FormatSignatureAndVersionInfo
-            FormatSignatureAndVersionInfo;
+            FormatSignatureAndVersionInfo => mrFileData.Resolve(
+                typeof(FormatSignatureAndVersionInfo), 
+                ResolveOptions.Default) as FormatSignatureAndVersionInfo;
 
-        public Hdf5File(Stream aFileStream)
+        private Hdf5File()
         {
+            
+        }
+
+        public static Hdf5File Open(string aPath)
+        {
+            return Open(new FileInfo(aPath));
+        }
+
+        public static Hdf5File Open(FileInfo aFileInfo)
+        {
+            Hdf5File
+                fToReturn = new Hdf5File();
+            StreamInfo 
+                fStreamInfo = new StreamInfo(aFileInfo);
+
+
+
+            return fToReturn;
+
+        }
+
+        public Hdf5File Open(Stream aFileStream)
+        {
+            Hdf5File
+                fToReturn = new Hdf5File();
             if(!aFileStream.CanRead)
             {
                 throw new Exception("Cannot Read Stream");
@@ -29,32 +66,37 @@ namespace ndf5
 
             System.IO.FileStream
                   fFileStream = aFileStream as FileStream;
-            
+
+            StreamInfo
+                fStreamInfo;
+
             if(!ReferenceEquals(null, fFileStream))
             {
-                StreamInfo = new StreamInfo(
+                fStreamInfo = new StreamInfo(
                     fFileStream.CanRead,
                     fFileStream.Position,
                     new FileInfo(fFileStream.Name));
             }
             else
             {
-                StreamInfo = new StreamInfo(
+                fStreamInfo = new StreamInfo(
                     aFileStream.CanRead,
                     aFileStream.Position);
             }
 
             
-            FileData.Register(
-                typeof(StreamInfo),
-                this.StreamInfo);
-
+            fToReturn.mrFileData.Register(
+                fStreamInfo);
+            FormatSignatureAndVersionInfo
+                fFormatSignatureAndVersionInfo;
             if(!FormatSignatureAndVersionInfo.TryRead(
                 aFileStream,
-                out FormatSignatureAndVersionInfo))
+                out fFormatSignatureAndVersionInfo))
                 throw new Exception("This does not appear to be an HDF5 file / stream");
-                
 
+            fToReturn.mrFileData.Register(fFormatSignatureAndVersionInfo);
+
+            return fToReturn;
         }
 
     }
