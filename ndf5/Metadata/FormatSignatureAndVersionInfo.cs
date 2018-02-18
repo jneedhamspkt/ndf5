@@ -9,8 +9,9 @@ namespace ndf5.Metadata
     /// </summary>
     public class FormatSignatureAndVersionInfo
     {
+        public const int
+            Length = 9;
         private const int
-            mcBlockLength = 9,
             mcFormatSignatureLength = 8;
 
         private static readonly byte[]
@@ -58,12 +59,12 @@ namespace ndf5.Metadata
 
             //Do the Read
             byte[]
-                fReadBuffer = new byte[mcBlockLength];
+                fReadBuffer = new byte[Length];
 
-            if (mcBlockLength != aInputStream.Read(
+            if (Length != aInputStream.Read(
                 fReadBuffer,
                 0,
-                mcBlockLength))
+                Length))
             {
                 aParsed = null;
                 return false;

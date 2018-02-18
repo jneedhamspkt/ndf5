@@ -50,20 +50,20 @@ namespace ndf5.Metadata
         /// Gets the group leaf node K.
         /// </summary>
         /// <value>The group leaf node k.</value>
-        byte GroupLeafNodeK { get; }
+        ushort GroupLeafNodeK { get; }
 
         /// <summary>
         /// Gets the group leaf node K.
         /// </summary>
         /// <remarks>
         /// <value>The group leaf node k.</value>
-        byte GroupInternalNodeK { get; }
+        ushort GroupInternalNodeK { get; }
 
         /// <summary>
         /// Gets the group leaf node K.
         /// </summary>
         /// <value>The group leaf node k.</value>
-        byte IndexedStorageInternalNodeK { get; }
+        ushort IndexedStorageInternalNodeK { get; }
 
         /// <summary>
         /// Gets the base address.

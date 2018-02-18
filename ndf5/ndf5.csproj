@@ -17,6 +17,7 @@
     <Folder Include="Infrastructure\" />
     <Folder Include="Objects\" />
     <Folder Include="Streams\" />
+    <Folder Include="Exceptions\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />

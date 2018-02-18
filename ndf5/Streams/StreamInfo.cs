@@ -24,7 +24,6 @@ namespace ndf5.Streams
         /// Initializes a new instance of the <see cref="T:ndf5.StreamInfo"/> class.
         /// </summary>
         /// <param name="aCanwrite">If set to <c>true</c> a canwrite.</param>
-        /// <param name="aStart">A start.</param>
         public StreamInfo(
             bool aCanwrite)
         {
@@ -36,7 +35,6 @@ namespace ndf5.Streams
         /// Initializes a new instance of the <see cref="T:ndf5.StreamInfo"/> class.
         /// </summary>
         /// <param name="aCanwrite">If set to <c>true</c> a canwrite.</param>
-        /// <param name="aStart">A start.</param>
         /// <param name="aSourceFile">A source file.</param>
         public StreamInfo(
             bool aCanwrite,

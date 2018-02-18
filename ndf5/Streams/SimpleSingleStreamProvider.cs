@@ -44,7 +44,7 @@ namespace ndf5.Streams
                 mrLockSource;
 
             public WrappedStream(
-                Stream aContainedStream) : base(aContainedStream, 0L)
+                Stream aContainedStream) : base(aContainedStream)
             {
                 mrLockSource = aContainedStream;
             }
