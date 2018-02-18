@@ -10,7 +10,7 @@ namespace ndf5.Metadata
     public class FormatSignatureAndVersionInfo
     {
         private const int
-            mcBlockLength = 12,
+            mcBlockLength = 9,
             mcFormatSignatureLength = 8;
 
         private static readonly byte[]
@@ -28,42 +28,23 @@ namespace ndf5.Metadata
         public readonly byte
             SuperBlockVersion;
 
-        /// <summary>
-        /// The free space storage version.
-        /// </summary>
-        public readonly byte
-            FreeSpaceStorageVersion;
-
-        /// <summary>
-        /// The root group symbol table version.
-        /// </summary>
-        public readonly byte
-            RootGroupSymbolTableVersion;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:ndf5.Metadata.FormatSignatureAndVersionInfo"/> class.
         /// </summary>
         /// <param name="aSuperBlockVersion">A super block version.</param>
-        /// <param name="aFreeSpaceStorageVersion">A free space storage version.</param>
-        /// <param name="aRootGroupSymbolTableVersion">A root group symbol table version.</param>
         /// <param name="aLocationAddress">A location address where this was parseed</param>
         public FormatSignatureAndVersionInfo(
             byte aSuperBlockVersion,
-            byte aFreeSpaceStorageVersion,
-            byte aRootGroupSymbolTableVersion,
             long aLocationAddress = 0)
         {
             SuperBlockVersion = aSuperBlockVersion;
-            FreeSpaceStorageVersion = aFreeSpaceStorageVersion;
-            RootGroupSymbolTableVersion = aRootGroupSymbolTableVersion;
             LocationAddress = aLocationAddress;
         }
 
         public byte[] AsBytes => FormatSignature
             .Concat(new byte[]{
                 SuperBlockVersion,
-                FreeSpaceStorageVersion,
-                RootGroupSymbolTableVersion,
                 0})
             .ToArray();
 
@@ -95,19 +76,16 @@ namespace ndf5.Metadata
             {
                 fGoodSignature &= fReadBuffer[fiByte] == FormatSignature[fiByte];
             }
-            //Check Reserved byte
-            fGoodSignature &= fReadBuffer[11] == 0;
 
             if(!fGoodSignature)
             {
                 aParsed = null;
                 return false;
-            }
+            } 
 
+            //Record the superblock version and move on
             aParsed = new FormatSignatureAndVersionInfo(
                 fReadBuffer[8],
-                fReadBuffer[9],
-                fReadBuffer[10], 
                 fLocationAddress);
 
             return true;
