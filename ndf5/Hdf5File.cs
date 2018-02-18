@@ -20,18 +20,20 @@ namespace ndf5
         /// </summary>
         /// <value>The stream info.</value>
         internal StreamInfo
-            StreamInfo => mrFileData.Resolve(
-                typeof(StreamInfo),
-                ResolveOptions.Default) as StreamInfo;
+        StreamInfo => mrFileData.Resolve<StreamInfo>(
+                ResolveOptions.Default);
         
         /// <summary>
         /// Gets the format signature and version info.
         /// </summary>
         /// <value>The format signature and version info.</value>
         public FormatSignatureAndVersionInfo
-            FormatSignatureAndVersionInfo => mrFileData.Resolve(
-                typeof(FormatSignatureAndVersionInfo), 
-                ResolveOptions.Default) as FormatSignatureAndVersionInfo;
+        FormatSignatureAndVersionInfo => mrFileData.Resolve<FormatSignatureAndVersionInfo>(
+                ResolveOptions.Default);
+
+        private IStreamProvider
+            StreamProvider => mrFileData.Resolve<IStreamProvider>(
+                ResolveOptions.Default);
 
         private Hdf5File()
         {
@@ -49,8 +51,20 @@ namespace ndf5
                 fToReturn = new Hdf5File();
             StreamInfo 
                 fStreamInfo = new StreamInfo(aFileInfo);
+            FileStream
+                fFileStream = new FileStream(
+                    aFileInfo.FullName,
+                    FileMode.Open,
+                    fStreamInfo.CanWrite
+                        ? FileAccess.ReadWrite
+                        : FileAccess.Read,
+                    FileShare.Read);
 
+            fToReturn.mrFileData.Register(fStreamInfo).AsSingleton();
+            fToReturn.mrFileData.Register<IStreamProvider>(
+                new SingleStreamProvider(fFileStream));
 
+            fToReturn.Load();
 
             return fToReturn;
 
@@ -85,20 +99,36 @@ namespace ndf5
                     aFileStream.Position);
             }
 
-            
             fToReturn.mrFileData.Register(
-                fStreamInfo);
-            FormatSignatureAndVersionInfo
-                fFormatSignatureAndVersionInfo;
-            if(!FormatSignatureAndVersionInfo.TryRead(
-                aFileStream,
-                out fFormatSignatureAndVersionInfo))
-                throw new Exception("This does not appear to be an HDF5 file / stream");
+                fStreamInfo).AsSingleton();
 
-            fToReturn.mrFileData.Register(fFormatSignatureAndVersionInfo);
+            fToReturn.mrFileData.Register<IStreamProvider>(
+                new SingleStreamProvider(aFileStream)).AsSingleton();
+            
+            fToReturn.Load();
 
             return fToReturn;
         }
+
+        private void Load()
+        {
+            IStreamProvider 
+                fStreamProvider = this.StreamProvider;
+            using (Stream fLoadingStream = fStreamProvider.GetReadonlyStream()) 
+            {
+                FormatSignatureAndVersionInfo
+                    fFormatSignatureAndVersionInfo;
+
+                if (!FormatSignatureAndVersionInfo.TryRead(
+                    fLoadingStream,
+                    out fFormatSignatureAndVersionInfo))
+                    throw new Exception("This does not appear to be an HDF5 file / stream");
+
+                this.mrFileData.Register(
+                    fFormatSignatureAndVersionInfo).AsSingleton();
+            }
+        }
+
 
     }
 }

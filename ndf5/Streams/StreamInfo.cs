@@ -11,25 +11,20 @@ namespace ndf5.Streams
         /// <summary>
         /// True if this File can be written to;
         /// </summary>
-        bool
+        public readonly bool
             CanWrite;
 
         /// <summary>
         /// Where the strem was when we were asked to open it
         /// </summary>
-        long
+        public readonly long
             Start;
 
-        /// <summary>
-        /// True if new streams may be opened
-        /// </summary>
-        bool
-            CanOpenNewStreams;
 
         /// <summary>
         /// The original file.
         /// </summary>
-        FileInfo
+        public readonly FileInfo
             OriginalFile;
 
         /// <summary>
@@ -43,7 +38,6 @@ namespace ndf5.Streams
         {
             CanWrite = aCanwrite;
             Start = aStart;
-            CanOpenNewStreams = false;
             OriginalFile = null;
         }
 
@@ -61,7 +55,6 @@ namespace ndf5.Streams
             CanWrite = aCanwrite;
             Start = aStart;
             OriginalFile = aSourceFile;
-            CanOpenNewStreams = false;
         }
 
         /// <summary>
@@ -74,7 +67,6 @@ namespace ndf5.Streams
             CanWrite = !aFileInfo.IsReadOnly;
             Start = 0L;
             OriginalFile = aFileInfo;
-            CanOpenNewStreams = true;
         }
     }
 }
