@@ -5,6 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Class1.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Include="..\External\TinyIoC\src\TinyIoC\TinyIoC.cs">
       <Link>TinyIoC.cs</Link>
     </Compile>
@@ -13,6 +16,7 @@
     <Folder Include="Metadata\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Objects\" />
+    <Folder Include="Streams\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />
