@@ -22,14 +22,18 @@ namespace ndf5.Metadata
 
         private class SuperBlockObj : ISuperBlock
         {
-            public SuperBlockObj(long aLocationAddress)
+            public SuperBlockObj(
+                long aLocationAddress, 
+                byte aVersion)
             {
                 LocationAddress = aLocationAddress;
+                BaseAddress = aLocationAddress;
+                SuperBlockVersion = aVersion;
             }
 
             public long LocationAddress { get; private set; }
 
-            public byte SuperBlockVersion { get; set; } = 0;
+            public byte SuperBlockVersion { get; private set; }
 
             public byte FreeSpaceStorageVersion { get; set; } = 0;
 
@@ -41,6 +45,8 @@ namespace ndf5.Metadata
 
             public byte SizeOfLengths { get; set; }
 
+            public FileConsistencyFlags? FileConsistencyFlags { get; set; }
+
             public ushort GroupLeafNodeK { get; set; }
 
             public ushort GroupInternalNodeK { get; set; }
@@ -49,11 +55,11 @@ namespace ndf5.Metadata
 
             public long BaseAddress { get; set; }
 
-            public long FileFreespaceInfoAddress { get; set; }
+            public long? FileFreespaceInfoAddress { get; set; }
 
             public long EndOfFileAddress { get; set; }
 
-            public long DriverInformationBlockAddress { get; set; }
+            public long? DriverInformationBlockAddress { get; set; }
         }
 
         public ISuperBlock SuperBlock
@@ -62,7 +68,8 @@ namespace ndf5.Metadata
             {
                 SuperBlockObj
                     fStartingObject = new SuperBlockObj(
-                        mrFormatSignatureAndVersionInfo.LocationAddress);
+                        mrFormatSignatureAndVersionInfo.LocationAddress,
+                    mrFormatSignatureAndVersionInfo.SuperBlockVersion);
 
                 switch(mrFormatSignatureAndVersionInfo.SuperBlockVersion)
                 {
@@ -71,9 +78,9 @@ namespace ndf5.Metadata
                     case 1:
                         return ParseV0orV1(fStartingObject, true);
                     case 2:
-                        return ParseV2(fStartingObject);
+                        return ParseV2orV3(fStartingObject, false);
                     case 3:
-                        return ParseV3(fStartingObject);
+                        return ParseV2orV3(fStartingObject, true);
                     default:
                         throw new Hdf5UnsupportedFeature(
                             $"Unsupported superblock version: {mrFormatSignatureAndVersionInfo.SuperBlockVersion}");
@@ -131,37 +138,58 @@ namespace ndf5.Metadata
                     if (BitConverter.ToUInt32(fHeadbuffer, 2) != 0)
                         throw new InvalidDataException("Reserved bytes expected to be zero");
                 }
+                aContainer.BaseAddress = aContainer.LocationAddress;
+                using(Hdf5Reader fReader = new Hdf5Reader(fStream, aContainer))
+                {
+                    long?
+                        fBaseAddress = fReader.ReadOffset(),
+                        fFreeSpaceAddress = fReader.ReadOffset(),
+                        fEndOfFileAddress = fReader.ReadOffset(),
+                        fDirverInformationBlockAddress = fReader.ReadOffset(),
+                        fRootGroupAddress = fReader.ReadOffset();
 
 
+                    if (!fBaseAddress.HasValue)
+                        throw new InvalidDataException("No base adddress Specified");
+                    aContainer.BaseAddress = fBaseAddress.Value;
+                    aContainer.FileFreespaceInfoAddress = fFreeSpaceAddress;
+                    if (!fEndOfFileAddress.HasValue)
+                        throw new InvalidDataException("No End Of file Adddress Specified");
+                    aContainer.EndOfFileAddress = fEndOfFileAddress.Value;
+                    aContainer.DriverInformationBlockAddress = fDirverInformationBlockAddress;
 
-
-
-                aContainer.FreeSpaceStorageVersion = (byte)fStream.ReadByte();
+                }
             }
 
             return aContainer;
         }
 
-        private ISuperBlock ParseV2(SuperBlockObj aContainer)
+        private ISuperBlock ParseV2orV3(SuperBlockObj aContainer, bool aIsV3)
         {
             using (Stream fStream = mrStreamProvider.GetReadonlyStream())
             {
-                fStream.Seek(aContainer.LocationAddress, SeekOrigin.Begin);
+               
+                fStream.Seek(
+                    aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length,
+                    SeekOrigin.Begin);
+
+                const byte
+                    fcHeaderBytes = 3;
+                byte[]
+                    fHeadbuffer = new byte[fcHeaderBytes];
+                if (fcHeaderBytes != fStream.Read(fHeadbuffer, 0, fcHeaderBytes))
+                    throw new EndOfStreamException("Could not read Superblock");
+
+
+                aContainer.SizeOfOffsets = fHeadbuffer[0];
+                aContainer.SizeOfLengths = fHeadbuffer[1];
+                if (aIsV3)
+                    aContainer.FileConsistencyFlags = (FileConsistencyFlags)fHeadbuffer[2];
+
+
 
             }
             return aContainer;
         }
-
-        private ISuperBlock ParseV3(SuperBlockObj aContainer)
-        {
-            using (Stream fStream = mrStreamProvider.GetReadonlyStream())
-            {
-                fStream.Seek(aContainer.LocationAddress, SeekOrigin.Begin);
-
-            }
-            return aContainer;
-        }
-
-
     }
 }

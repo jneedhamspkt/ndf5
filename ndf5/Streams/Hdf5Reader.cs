@@ -44,12 +44,64 @@ namespace ndf5.Streams
             }
         }
 
+        public long? ReadOffset()
+        {
+            return ReadFeild(mrSuperBlock.SizeOfOffsets);
+        }
+
+        public long? ReadLength()
+        {
+            return ReadFeild(mrSuperBlock.SizeOfLengths);
+        }
+
+        private long? ReadFeild(byte aSize)
+        {
+            byte[]
+                fBuffer = new byte[aSize];
+            Read(fBuffer, 0, aSize);
+            switch (aSize)
+            {
+                case 2:
+                    ushort 
+                        fShort = BitConverter.ToUInt16(fBuffer, aSize);
+                    if (fShort == ushort.MaxValue)
+                        return null;
+                    return fShort;
+                case 4:
+                    uint
+                        fUint = BitConverter.ToUInt32(fBuffer, aSize);
+                    if (fUint == uint.MaxValue)
+                        return null;
+                    return fUint;
+                case 8:
+                    ulong
+                        fUlong = BitConverter.ToUInt64(fBuffer, aSize);
+                    if (fUlong == uint.MaxValue)
+                        return null;
+                    if (fUlong > (ulong)long.MaxValue)
+                        throw new Exception("Unsupported Value");
+                        return (long)fUlong;
+                default:
+                    throw new Exception("Unsupported Size");
+            }
+        }
+
         public override void SetLength(long value)
         {
             throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
         }
 
         public override void Write(byte[] buffer, int offset, int count)
+        {
+            throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
+        }
+
+        public override void WriteByte(byte value)
+        {
+            throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
+        }
+
+        public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
         {
             throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
         }

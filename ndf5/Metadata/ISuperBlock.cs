@@ -66,6 +66,12 @@ namespace ndf5.Metadata
         ushort IndexedStorageInternalNodeK { get; }
 
         /// <summary>
+        /// Gets the file consistency flags for the file
+        /// </summary>
+        /// <value>The file consistency flags.</value>
+        FileConsistencyFlags? FileConsistencyFlags { get; }
+
+        /// <summary>
         /// Gets the base address.
         /// </summary>
         /// <remarks>
@@ -89,7 +95,7 @@ namespace ndf5.Metadata
         /// Gets the file freespace info address.
         /// </summary>
         /// <value>The file freespace info address.</value>
-        long FileFreespaceInfoAddress { get; }
+        long? FileFreespaceInfoAddress { get; }
 
         /// <summary>
         /// Gets the end of file address.
@@ -101,6 +107,8 @@ namespace ndf5.Metadata
         /// Gets the driver information block address.
         /// </summary>
         /// <value>The driver information block address.</value>
-        long DriverInformationBlockAddress { get; }
+        long? DriverInformationBlockAddress { get; }
+
+
     }
 }
