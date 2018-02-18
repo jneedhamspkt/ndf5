@@ -15,13 +15,6 @@ namespace ndf5.Streams
             CanWrite;
 
         /// <summary>
-        /// Where the strem was when we were asked to open it
-        /// </summary>
-        public readonly long
-            Start;
-
-
-        /// <summary>
         /// The original file.
         /// </summary>
         public readonly FileInfo
@@ -33,11 +26,9 @@ namespace ndf5.Streams
         /// <param name="aCanwrite">If set to <c>true</c> a canwrite.</param>
         /// <param name="aStart">A start.</param>
         public StreamInfo(
-            bool aCanwrite,
-            long aStart)
+            bool aCanwrite)
         {
             CanWrite = aCanwrite;
-            Start = aStart;
             OriginalFile = null;
         }
 
@@ -49,11 +40,9 @@ namespace ndf5.Streams
         /// <param name="aSourceFile">A source file.</param>
         public StreamInfo(
             bool aCanwrite,
-            long aStart,
             FileInfo aSourceFile)
         {
             CanWrite = aCanwrite;
-            Start = aStart;
             OriginalFile = aSourceFile;
         }
 
@@ -65,7 +54,6 @@ namespace ndf5.Streams
             FileInfo aFileInfo)
         {
             CanWrite = !aFileInfo.IsReadOnly;
-            Start = 0L;
             OriginalFile = aFileInfo;
         }
     }

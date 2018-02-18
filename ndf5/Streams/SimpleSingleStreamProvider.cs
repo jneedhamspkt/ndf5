@@ -9,20 +9,17 @@ namespace ndf5.Streams
     /// <summary>
     /// Arbitrates a single stream across multiple request acesses;
     /// </summary>
-    internal class SingleStreamProvider : IStreamProvider
+    internal class SimpleSingleStreamProvider : 
+        IStreamProvider
     {
         private readonly Stream 
             mrSourceStream;
 
-        private readonly StreamInfo
-            mrStreamInfo;
 
-        public SingleStreamProvider(
-            Stream aSourceStream,
-            StreamInfo aStreamInfo)
+        public SimpleSingleStreamProvider(
+            Stream aSourceStream)
         {
             mrSourceStream = aSourceStream;
-            mrStreamInfo = aStreamInfo;
         }  
 
         public Stream GetStream(StreamRequestArguments aArguments)
@@ -38,7 +35,7 @@ namespace ndf5.Streams
             {
                 Monitor.Enter(mrSourceStream);
             }
-            return new WrappedStream(mrSourceStream, mrStreamInfo);
+            return new WrappedStream(mrSourceStream);
         }
 
         private class WrappedStream : StreamContainer
@@ -47,8 +44,7 @@ namespace ndf5.Streams
                 mrLockSource;
 
             public WrappedStream(
-                Stream aContainedStream,
-                StreamInfo aStreamInfo) : base(aContainedStream, aStreamInfo.Start)
+                Stream aContainedStream) : base(aContainedStream, 0L)
             {
                 mrLockSource = aContainedStream;
             }

@@ -14,7 +14,13 @@ namespace ndf5.Metadata
             mcFormatSignatureLength = 8;
 
         private static readonly byte[]
-        FormatSignature = { 137,72,68,70,13,10,26,10 };
+            FormatSignature = { 137,72,68,70,13,10,26,10 };
+
+        /// <summary>
+        /// The location of this FormatSignatureAndVersionInfo in the file
+        /// </summary>
+        public long
+            LocationAddress;
 
         /// <summary>
         /// The super block version.
@@ -34,14 +40,23 @@ namespace ndf5.Metadata
         public readonly byte
             RootGroupSymbolTableVersion;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:ndf5.Metadata.FormatSignatureAndVersionInfo"/> class.
+        /// </summary>
+        /// <param name="aSuperBlockVersion">A super block version.</param>
+        /// <param name="aFreeSpaceStorageVersion">A free space storage version.</param>
+        /// <param name="aRootGroupSymbolTableVersion">A root group symbol table version.</param>
+        /// <param name="aLocationAddress">A location address where this was parseed</param>
         public FormatSignatureAndVersionInfo(
             byte aSuperBlockVersion,
             byte aFreeSpaceStorageVersion,
-            byte aRootGroupSymbolTableVersion)
+            byte aRootGroupSymbolTableVersion,
+            long aLocationAddress = 0)
         {
             SuperBlockVersion = aSuperBlockVersion;
             FreeSpaceStorageVersion = aFreeSpaceStorageVersion;
             RootGroupSymbolTableVersion = aRootGroupSymbolTableVersion;
+            LocationAddress = aLocationAddress;
         }
 
         public byte[] AsBytes => FormatSignature
@@ -56,6 +71,11 @@ namespace ndf5.Metadata
             Stream aInputStream,
             out FormatSignatureAndVersionInfo aParsed)
         {
+            //Record where we are
+            long
+                fLocationAddress = aInputStream.Position;
+
+            //Do the Read
             byte[]
                 fReadBuffer = new byte[mcBlockLength];
 
@@ -67,6 +87,8 @@ namespace ndf5.Metadata
                 aParsed = null;
                 return false;
             }
+
+            // Check the signature 
             bool
                 fGoodSignature = true;
             for (int fiByte = 0; fiByte < mcFormatSignatureLength; ++fiByte)
@@ -85,7 +107,8 @@ namespace ndf5.Metadata
             aParsed = new FormatSignatureAndVersionInfo(
                 fReadBuffer[8],
                 fReadBuffer[9],
-                fReadBuffer[10]);
+                fReadBuffer[10], 
+                fLocationAddress);
 
             return true;
         }
