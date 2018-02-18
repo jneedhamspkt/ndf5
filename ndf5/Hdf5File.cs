@@ -7,7 +7,7 @@ using ndf5.Streams;
 
 namespace ndf5
 {
-    public class Hdf5File
+    public class Hdf5File : IDisposable
     {
         /// <summary>
         /// Pesristantly avlaible data in this file
@@ -35,10 +35,30 @@ namespace ndf5
             StreamProvider => mrFileData.Resolve<IStreamProvider>(
                 ResolveOptions.Default);
 
-        private Hdf5File()
+        ~Hdf5File()
         {
-            
+            Dispose(false);
         }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Dispose(true);
+        }
+
+        private void Dispose(bool aDisposing)
+        {
+            if (!aDisposing)
+                return;
+
+            IDisposable
+                fStreamProvider = mrFileData.Resolve<IStreamProvider>() as IDisposable;
+            if (!ReferenceEquals(null, fStreamProvider))
+                fStreamProvider.Dispose();
+
+            mrFileData.Dispose();
+        }
+
 
         public static Hdf5File Open(string aPath)
         {
@@ -60,7 +80,7 @@ namespace ndf5
                         : FileAccess.Read,
                     FileShare.Read);
 
-            fToReturn.mrFileData.Register(fStreamInfo).AsSingleton();
+            fToReturn.mrFileData.Register(fStreamInfo);
             fToReturn.mrFileData.Register<IStreamProvider>(
                 new SingleStreamProvider(fFileStream));
 
@@ -70,7 +90,7 @@ namespace ndf5
 
         }
 
-        public Hdf5File Open(Stream aFileStream)
+        public static Hdf5File Open(Stream aFileStream)
         {
             Hdf5File
                 fToReturn = new Hdf5File();
@@ -100,10 +120,10 @@ namespace ndf5
             }
 
             fToReturn.mrFileData.Register(
-                fStreamInfo).AsSingleton();
+                fStreamInfo);
 
             fToReturn.mrFileData.Register<IStreamProvider>(
-                new SingleStreamProvider(aFileStream)).AsSingleton();
+                new SingleStreamProvider(aFileStream));
             
             fToReturn.Load();
 
@@ -125,7 +145,7 @@ namespace ndf5
                     throw new Exception("This does not appear to be an HDF5 file / stream");
 
                 this.mrFileData.Register(
-                    fFormatSignatureAndVersionInfo).AsSingleton();
+                    fFormatSignatureAndVersionInfo);
             }
         }
 

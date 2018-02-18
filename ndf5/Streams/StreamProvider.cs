@@ -9,7 +9,8 @@ namespace ndf5.Streams
     internal static class StreamProvider
     {
         /// <summary>
-        /// Gets a readonly stream.
+        /// Gets a readonly stream.  Provided stream should be disposed 
+        /// as soon as possible.
         /// </summary>
         /// <returns>A temporary, readonly stream.</returns>
         /// <param name="aProvider">A stream provider.</param>
