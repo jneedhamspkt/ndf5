@@ -11,9 +11,15 @@ namespace ndf5.Streams
         private Stream
             ContainedStream;
 
-        public StreamContainer(Stream aContainedStream)
+        private long
+            mrOffset;
+
+        public StreamContainer(
+            Stream aContainedStream,
+            long aOffset)
         {
             ContainedStream = aContainedStream;
+            mrOffset = aOffset;
         }
 
         public override bool CanRead => ContainedStream.CanRead;
@@ -22,12 +28,12 @@ namespace ndf5.Streams
 
         public override bool CanWrite => ContainedStream.CanWrite;
 
-        public override long Length => ContainedStream.Length;
+        public override long Length => ContainedStream.Length - mrOffset;
 
         public override long Position
         {
-            get => ContainedStream.Position;
-            set => ContainedStream.Position = value;
+            get => ContainedStream.Position - mrOffset;
+            set => ContainedStream.Position = value + mrOffset;
         }
 
         public override void Flush()
@@ -42,12 +48,19 @@ namespace ndf5.Streams
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            return ContainedStream.Seek(offset, origin);
+            switch (origin)
+            {
+                case SeekOrigin.Begin:
+                    return ContainedStream.Seek(offset + mrOffset, origin);
+
+                default:
+                    return ContainedStream.Seek(offset, origin);
+            }
         }
 
         public override void SetLength(long value)
         {
-            ContainedStream.SetLength(value);
+            ContainedStream.SetLength(value + mrOffset);
         }
 
         public override void Write(byte[] buffer, int offset, int count)

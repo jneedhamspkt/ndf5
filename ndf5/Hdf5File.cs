@@ -81,8 +81,10 @@ namespace ndf5
                     FileShare.Read);
 
             fToReturn.mrFileData.Register(fStreamInfo);
-            fToReturn.mrFileData.Register<IStreamProvider>(
-                new SingleStreamProvider(fFileStream));
+            fToReturn.mrFileData.Register<IStreamProvider, SingleStreamProvider>(
+                new SingleStreamProvider(
+                    fFileStream,
+                    fStreamInfo));
 
             fToReturn.Load();
 
@@ -122,8 +124,10 @@ namespace ndf5
             fToReturn.mrFileData.Register(
                 fStreamInfo);
 
-            fToReturn.mrFileData.Register<IStreamProvider>(
-                new SingleStreamProvider(aFileStream));
+            fToReturn.mrFileData.Register<IStreamProvider, SingleStreamProvider>(
+                new SingleStreamProvider(
+                    aFileStream,
+                    fStreamInfo));
             
             fToReturn.Load();
 

@@ -11,12 +11,18 @@ namespace ndf5.Streams
     /// </summary>
     internal class SingleStreamProvider : IStreamProvider
     {
-        private readonly
-            Stream mrSourceStream;
+        private readonly Stream 
+            mrSourceStream;
 
-        public SingleStreamProvider(Stream aSourceStream)
+        private readonly StreamInfo
+            mrStreamInfo;
+
+        public SingleStreamProvider(
+            Stream aSourceStream,
+            StreamInfo aStreamInfo)
         {
             mrSourceStream = aSourceStream;
+            mrStreamInfo = aStreamInfo;
         }  
 
         public Stream GetStream(StreamRequestArguments aArguments)
@@ -32,7 +38,7 @@ namespace ndf5.Streams
             {
                 Monitor.Enter(mrSourceStream);
             }
-            return new WrappedStream(mrSourceStream);
+            return new WrappedStream(mrSourceStream, mrStreamInfo);
         }
 
         private class WrappedStream : StreamContainer
@@ -41,7 +47,8 @@ namespace ndf5.Streams
                 mrLockSource;
 
             public WrappedStream(
-                Stream aContainedStream) : base(aContainedStream)
+                Stream aContainedStream,
+                StreamInfo aStreamInfo) : base(aContainedStream, aStreamInfo.Start)
             {
                 mrLockSource = aContainedStream;
             }
