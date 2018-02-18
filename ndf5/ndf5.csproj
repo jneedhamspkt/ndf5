@@ -13,6 +13,7 @@
     <Folder Include="Metadata\" />
     <Folder Include="Infrastructure\" />
     <Folder Include="Objects\" />
+    <Folder Include="Streams\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />

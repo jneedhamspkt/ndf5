@@ -1,6 +1,6 @@
-﻿using System;
-using System.IO;
-namespace ndf5
+﻿using System.IO;
+
+namespace ndf5.Streams
 {
     /// <summary>
     /// Class that provides access to the source file / stream, but won't allow 

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace ndf5
+namespace ndf5.Streams
 {
     /// <summary>
     /// Information about the streams provided to to a <see cref="T:ndf5.Hdf5File"/>

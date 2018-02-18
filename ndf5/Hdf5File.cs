@@ -3,6 +3,7 @@ using System.IO;
 using TinyIoC;
 
 using ndf5.Metadata;
+using ndf5.Streams;
 
 namespace ndf5
 {
