@@ -110,5 +110,9 @@ namespace ndf5.Metadata
         long? DriverInformationBlockAddress { get; }
 
 
+        //TODO: Add Root Group Node / Entry
+
+        //TODO: Add Superblock Extension
+
     }
 }

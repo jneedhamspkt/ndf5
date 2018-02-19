@@ -31,6 +31,9 @@ namespace ndf5
         FormatSignatureAndVersionInfo => mrFileData.Resolve<FormatSignatureAndVersionInfo>(
                 ResolveOptions.Default);
 
+        public ISuperBlock
+            SuperBlock => mrFileData.Resolve<ISuperBlock>();
+
         private IStreamProvider
             StreamProvider => mrFileData.Resolve<IStreamProvider>(
                 ResolveOptions.Default);
@@ -38,7 +41,8 @@ namespace ndf5
         Hdf5File()
         {
             mrFileData.Register<ISuperBlockProvider, Hdf5SuperBlockProvider>().AsSingleton();
-            mrFileData.Register<ISuperBlock>((arg1, arg2) => arg1.Resolve<ISuperBlockProvider>().SuperBlock);
+            mrFileData.Register<ISuperBlock>((arg1, arg2) =>
+                 arg1.Resolve<ISuperBlockProvider>().SuperBlock);
         }
 
         ~Hdf5File()
@@ -175,6 +179,7 @@ namespace ndf5
 
                 this.mrFileData.Register(
                     fFormatSignatureAndVersionInfo);
+
 
 
             }

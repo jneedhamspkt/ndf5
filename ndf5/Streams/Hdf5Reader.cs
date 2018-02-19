@@ -63,20 +63,20 @@ namespace ndf5.Streams
             {
                 case 2:
                     ushort 
-                        fShort = BitConverter.ToUInt16(fBuffer, aSize);
+                        fShort = BitConverter.ToUInt16(fBuffer, 0);
                     if (fShort == ushort.MaxValue)
                         return null;
                     return fShort;
                 case 4:
                     uint
-                        fUint = BitConverter.ToUInt32(fBuffer, aSize);
+                        fUint = BitConverter.ToUInt32(fBuffer, 0);
                     if (fUint == uint.MaxValue)
                         return null;
                     return fUint;
                 case 8:
                     ulong
-                        fUlong = BitConverter.ToUInt64(fBuffer, aSize);
-                    if (fUlong == uint.MaxValue)
+                        fUlong = BitConverter.ToUInt64(fBuffer, 0);
+                    if (fUlong == ulong.MaxValue)
                         return null;
                     if (fUlong > (ulong)long.MaxValue)
                         throw new Exception("Unsupported Value");

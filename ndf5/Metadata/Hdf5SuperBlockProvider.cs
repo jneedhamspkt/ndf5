@@ -12,7 +12,7 @@ namespace ndf5.Metadata
         FormatSignatureAndVersionInfo 
             mrFormatSignatureAndVersionInfo;
 
-        internal Hdf5SuperBlockProvider(
+        public Hdf5SuperBlockProvider(
             IStreamProvider aStreamProvider,
             FormatSignatureAndVersionInfo aFormatSignatureAndVersionInfo)
         {
@@ -119,10 +119,6 @@ namespace ndf5.Metadata
                 aContainer.GroupLeafNodeK = BitConverter.ToUInt16(fHeadbuffer,7);
                 aContainer.GroupInternalNodeK = BitConverter.ToUInt16(fHeadbuffer, 9);
 
-                if (BitConverter.ToUInt32(fHeadbuffer, 10) != 0)
-                    throw new InvalidDataException("File consistincy flags expected to be zero");
-
-
                 if(aIsV1)
                 {
                     const int   
@@ -145,8 +141,7 @@ namespace ndf5.Metadata
                         fBaseAddress = fReader.ReadOffset(),
                         fFreeSpaceAddress = fReader.ReadOffset(),
                         fEndOfFileAddress = fReader.ReadOffset(),
-                        fDirverInformationBlockAddress = fReader.ReadOffset(),
-                        fRootGroupAddress = fReader.ReadOffset();
+                        fDirverInformationBlockAddress = fReader.ReadOffset();
 
 
                     if (!fBaseAddress.HasValue)
@@ -183,10 +178,35 @@ namespace ndf5.Metadata
 
                 aContainer.SizeOfOffsets = fHeadbuffer[0];
                 aContainer.SizeOfLengths = fHeadbuffer[1];
+                byte
+                    fFlags = fHeadbuffer[2];
+
+                if ((fFlags & ~((int)(FileConsistencyFlags.SwmrAccessEngaged | FileConsistencyFlags.WriteAccessOpen))) != 0)
+                    throw new InvalidDataException($"Unexpected {nameof(FileConsistencyFlags)}: 0x{fFlags:X}");
+
                 if (aIsV3)
-                    aContainer.FileConsistencyFlags = (FileConsistencyFlags)fHeadbuffer[2];
+                    aContainer.FileConsistencyFlags = (FileConsistencyFlags)fFlags;
 
+                using (Hdf5Reader fReader = new Hdf5Reader(fStream, aContainer))
+                {
+                    long?
+                        fBaseAddress = fReader.ReadOffset(),
+                    fSuperBlockExtensionAddress = fReader.ReadOffset(),
+                    fEndOfFileAddress = fReader.ReadOffset(),
+                    fRootGroupAddress = fReader.ReadOffset();
+                
+                    if (!fBaseAddress.HasValue)
+                        throw new InvalidDataException("No base adddress Specified");
+                    aContainer.BaseAddress = fBaseAddress.Value;
 
+                    //TODO: Handle SuperVlock Extensions
+
+                    if (!fEndOfFileAddress.HasValue)
+                        throw new InvalidDataException("No End Of file Adddress Specified");
+                    aContainer.EndOfFileAddress = fEndOfFileAddress.Value;
+
+                    //TODO: Handle Root groups
+                }
 
             }
             return aContainer;

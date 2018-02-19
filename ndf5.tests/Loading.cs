@@ -29,9 +29,12 @@ namespace ndf5.tests
             Assembly
                 fAssembly = Assembly.GetExecutingAssembly();
 
-            using(Stream fTestStream = fAssembly.GetManifestResourceStream(aFile))
+            using (Stream fTestStream = fAssembly.GetManifestResourceStream(aFile))
             {
-                Hdf5File.Open(fTestStream).Dispose();
+                using (Hdf5File fTest = Hdf5File.Open(fTestStream))
+                {
+                    Assert.That(() => fTest.SuperBlock.ToString(), Throws.Nothing);
+                }
             }
         }
 
@@ -62,7 +65,10 @@ namespace ndf5.tests
                     fTest.Write(fFileBytes, 0, fLength);
                     fTest.Flush();
 
-                    Hdf5File.Open(new FileInfo(fTestFileName)).Dispose();
+                    using (Hdf5File fTestFile = Hdf5File.Open(new FileInfo(fTestFileName)))
+                    {
+                        Assert.That(() => fTestFile.SuperBlock.ToString(), Throws.Nothing);
+                    }
                 }
             }
         }
