@@ -8,18 +8,13 @@ namespace ndf5.Streams
     /// </summary>
     internal abstract class StreamContainer : Stream
     {
-        private Stream
+        protected Stream
             ContainedStream;
 
-        private long
-            mrOffset;
-
         public StreamContainer(
-            Stream aContainedStream,
-            long aOffset)
+            Stream aContainedStream)
         {
             ContainedStream = aContainedStream;
-            mrOffset = aOffset;
         }
 
         public override bool CanRead => ContainedStream.CanRead;
@@ -28,12 +23,12 @@ namespace ndf5.Streams
 
         public override bool CanWrite => ContainedStream.CanWrite;
 
-        public override long Length => ContainedStream.Length - mrOffset;
+        public override long Length => ContainedStream.Length;
 
         public override long Position
         {
-            get => ContainedStream.Position - mrOffset;
-            set => ContainedStream.Position = value + mrOffset;
+            get => ContainedStream.Position;
+            set => ContainedStream.Position = value;
         }
 
         public override void Flush()
@@ -46,26 +41,100 @@ namespace ndf5.Streams
             return ContainedStream.Read(buffer, offset, count);
         }
 
+        public override int ReadByte()
+        {
+            return ContainedStream.ReadByte();
+        }
+
+        public override int ReadTimeout
+        {
+            get
+            {
+                return ContainedStream.ReadTimeout;
+            }
+            set
+            {
+                ContainedStream.ReadTimeout = value;
+            }
+        }
+
+        public override System.Threading.Tasks.Task<int> ReadAsync(
+            byte[] buffer,
+            int offset,
+            int count,
+            System.Threading.CancellationToken cancellationToken)
+        {
+            return ContainedStream.ReadAsync(buffer, offset, count, cancellationToken);
+        }
+
         public override long Seek(long offset, SeekOrigin origin)
         {
-            switch (origin)
-            {
-                case SeekOrigin.Begin:
-                    return ContainedStream.Seek(offset + mrOffset, origin);
-
-                default:
-                    return ContainedStream.Seek(offset, origin);
-            }
+            return ContainedStream.Seek(offset, origin);
         }
 
         public override void SetLength(long value)
         {
-            ContainedStream.SetLength(value + mrOffset);
+            ContainedStream.SetLength(value);
+        }
+
+
+
+        public override bool CanTimeout
+        {
+            get
+            {
+                return ContainedStream.CanTimeout;
+            }
         }
 
         public override void Write(byte[] buffer, int offset, int count)
         {
             ContainedStream.Write(buffer, offset, count);
+        }
+
+        public override void WriteByte(byte value)
+        {
+            ContainedStream.WriteByte(value);
+        }
+
+        public override int WriteTimeout
+        {
+            get
+            {
+                return ContainedStream.WriteTimeout;
+            }
+            set
+            {
+                ContainedStream.WriteTimeout = value;
+            }
+        }
+
+        public override System.Threading.Tasks.Task WriteAsync(
+            byte[] buffer,
+            int offset,
+            int count, 
+            System.Threading.CancellationToken cancellationToken)
+        {
+            return ContainedStream.WriteAsync(buffer, offset, count, cancellationToken);
+        }
+
+        public override System.Threading.Tasks.Task CopyToAsync(
+            Stream destination,
+            int bufferSize,
+            System.Threading.CancellationToken cancellationToken)
+        {
+            return ContainedStream.CopyToAsync(destination, bufferSize, cancellationToken);
+        }
+
+        public override System.Threading.Tasks.Task FlushAsync(
+            System.Threading.CancellationToken cancellationToken)
+        {
+            return ContainedStream.FlushAsync(cancellationToken);
+        }
+
+        public override string ToString()
+        {
+            return $"{nameof(StreamContainer)}: {nameof(ContainedStream)} = {ContainedStream}";
         }
 
         protected override void Dispose(bool disposing)
@@ -75,5 +144,7 @@ namespace ndf5.Streams
         }
 
         protected abstract void OnDone(bool aDisposed);
+
+
     }
 }

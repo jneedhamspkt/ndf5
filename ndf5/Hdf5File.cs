@@ -31,9 +31,19 @@ namespace ndf5
         FormatSignatureAndVersionInfo => mrFileData.Resolve<FormatSignatureAndVersionInfo>(
                 ResolveOptions.Default);
 
+        public ISuperBlock
+            SuperBlock => mrFileData.Resolve<ISuperBlock>();
+
         private IStreamProvider
             StreamProvider => mrFileData.Resolve<IStreamProvider>(
                 ResolveOptions.Default);
+
+        Hdf5File()
+        {
+            mrFileData.Register<ISuperBlockProvider, Hdf5SuperBlockProvider>().AsSingleton();
+            mrFileData.Register<ISuperBlock>((arg1, arg2) =>
+                 arg1.Resolve<ISuperBlockProvider>().SuperBlock);
+        }
 
         ~Hdf5File()
         {
@@ -81,10 +91,9 @@ namespace ndf5
                     FileShare.Read);
 
             fToReturn.mrFileData.Register(fStreamInfo);
-            fToReturn.mrFileData.Register<IStreamProvider, SingleStreamProvider>(
-                new SingleStreamProvider(
-                    fFileStream,
-                    fStreamInfo));
+            fToReturn.mrFileData.Register<IStreamProvider, SimpleSingleStreamProvider>(
+                new SimpleSingleStreamProvider(
+                    fFileStream));
 
             fToReturn.Load();
 
@@ -111,23 +120,20 @@ namespace ndf5
             {
                 fStreamInfo = new StreamInfo(
                     fFileStream.CanRead,
-                    fFileStream.Position,
                     new FileInfo(fFileStream.Name));
             }
             else
             {
                 fStreamInfo = new StreamInfo(
-                    aFileStream.CanRead,
-                    aFileStream.Position);
+                    aFileStream.CanRead);
             }
 
             fToReturn.mrFileData.Register(
                 fStreamInfo);
 
-            fToReturn.mrFileData.Register<IStreamProvider, SingleStreamProvider>(
-                new SingleStreamProvider(
-                    aFileStream,
-                    fStreamInfo));
+            fToReturn.mrFileData.Register<IStreamProvider, SimpleSingleStreamProvider>(
+                new SimpleSingleStreamProvider(
+                    aFileStream));
             
             fToReturn.Load();
 
@@ -140,16 +146,42 @@ namespace ndf5
                 fStreamProvider = this.StreamProvider;
             using (Stream fLoadingStream = fStreamProvider.GetReadonlyStream()) 
             {
-                FormatSignatureAndVersionInfo
-                    fFormatSignatureAndVersionInfo;
+                //We Must start at the beginning
+                fLoadingStream.Seek(0L, SeekOrigin.Begin);
+                long
+                    fStreamLength = fLoadingStream.Length;
+                long
+                    fiStart = 0; 
 
-                if (!FormatSignatureAndVersionInfo.TryRead(
-                    fLoadingStream,
-                    out fFormatSignatureAndVersionInfo))
+                FormatSignatureAndVersionInfo
+                fFormatSignatureAndVersionInfo = null;
+
+                while (fiStart < fStreamLength)
+                {
+                    if (FormatSignatureAndVersionInfo.TryRead(
+                        fLoadingStream,
+                        out fFormatSignatureAndVersionInfo))
+                    {
+                        //TODO: Verify Checksum for Version 2 + 3 Here 
+                        //      before we decide to break or not
+                        break;
+                    }
+                        
+
+                    // Look for correct HDF5 start a 512, 1024, 2048, etc 
+                    // See https://support.hdfgroup.org/HDF5/doc/H5.format.html#Superblock
+                    fiStart = fiStart == 0
+                        ? 512
+                        : fiStart * 2;
+                }
+                if(ReferenceEquals(null, fFormatSignatureAndVersionInfo))
                     throw new Exception("This does not appear to be an HDF5 file / stream");
 
                 this.mrFileData.Register(
                     fFormatSignatureAndVersionInfo);
+
+
+
             }
         }
 

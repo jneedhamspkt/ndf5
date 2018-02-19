@@ -1,7 +1,7 @@
 ﻿using System.IO;
 namespace ndf5.Streams
 {
-    internal interface IStreamProvider
+    public interface IStreamProvider
     {
         /// <summary>
         /// Gets a stream to access the file, Provided stream should be disposed 

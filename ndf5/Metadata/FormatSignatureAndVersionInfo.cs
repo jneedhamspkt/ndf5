@@ -9,12 +9,19 @@ namespace ndf5.Metadata
     /// </summary>
     public class FormatSignatureAndVersionInfo
     {
+        public const int
+            Length = 9;
         private const int
-            mcBlockLength = 12,
             mcFormatSignatureLength = 8;
 
         private static readonly byte[]
-        FormatSignature = { 137,72,68,70,13,10,26,10 };
+            FormatSignature = { 137,72,68,70,13,10,26,10 };
+
+        /// <summary>
+        /// The location of this FormatSignatureAndVersionInfo in the file
+        /// </summary>
+        public long
+            LocationAddress;
 
         /// <summary>
         /// The super block version.
@@ -22,33 +29,23 @@ namespace ndf5.Metadata
         public readonly byte
             SuperBlockVersion;
 
-        /// <summary>
-        /// The free space storage version.
-        /// </summary>
-        public readonly byte
-            FreeSpaceStorageVersion;
 
         /// <summary>
-        /// The root group symbol table version.
+        /// Initializes a new instance of the <see cref="T:ndf5.Metadata.FormatSignatureAndVersionInfo"/> class.
         /// </summary>
-        public readonly byte
-            RootGroupSymbolTableVersion;
-
+        /// <param name="aSuperBlockVersion">A super block version.</param>
+        /// <param name="aLocationAddress">A location address where this was parseed</param>
         public FormatSignatureAndVersionInfo(
             byte aSuperBlockVersion,
-            byte aFreeSpaceStorageVersion,
-            byte aRootGroupSymbolTableVersion)
+            long aLocationAddress = 0)
         {
             SuperBlockVersion = aSuperBlockVersion;
-            FreeSpaceStorageVersion = aFreeSpaceStorageVersion;
-            RootGroupSymbolTableVersion = aRootGroupSymbolTableVersion;
+            LocationAddress = aLocationAddress;
         }
 
         public byte[] AsBytes => FormatSignature
             .Concat(new byte[]{
                 SuperBlockVersion,
-                FreeSpaceStorageVersion,
-                RootGroupSymbolTableVersion,
                 0})
             .ToArray();
 
@@ -56,36 +53,41 @@ namespace ndf5.Metadata
             Stream aInputStream,
             out FormatSignatureAndVersionInfo aParsed)
         {
-            byte[]
-                fReadBuffer = new byte[mcBlockLength];
+            //Record where we are
+            long
+                fLocationAddress = aInputStream.Position;
 
-            if (mcBlockLength != aInputStream.Read(
+            //Do the Read
+            byte[]
+                fReadBuffer = new byte[Length];
+
+            if (Length != aInputStream.Read(
                 fReadBuffer,
                 0,
-                mcBlockLength))
+                Length))
             {
                 aParsed = null;
                 return false;
             }
+
+            // Check the signature 
             bool
                 fGoodSignature = true;
             for (int fiByte = 0; fiByte < mcFormatSignatureLength; ++fiByte)
             {
                 fGoodSignature &= fReadBuffer[fiByte] == FormatSignature[fiByte];
             }
-            //Check Reserved byte
-            fGoodSignature &= fReadBuffer[11] == 0;
 
             if(!fGoodSignature)
             {
                 aParsed = null;
                 return false;
-            }
+            } 
 
+            //Record the superblock version and move on
             aParsed = new FormatSignatureAndVersionInfo(
                 fReadBuffer[8],
-                fReadBuffer[9],
-                fReadBuffer[10]);
+                fLocationAddress);
 
             return true;
         }
