@@ -10,7 +10,7 @@ namespace ndf5
     public class Hdf5File : IDisposable
     {
         /// <summary>
-        /// Pesristantly avlaible data in this file
+        /// Persistently available data in this file
         /// </summary>
         private readonly TinyIoCContainer
             mrFileData = new TinyIoCContainer();
