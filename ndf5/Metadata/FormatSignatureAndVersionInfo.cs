@@ -44,9 +44,7 @@ namespace ndf5.Metadata
         }
 
         public byte[] AsBytes => FormatSignature
-            .Concat(new byte[]{
-                SuperBlockVersion,
-                0})
+            .Concat(new byte[]{SuperBlockVersion})
             .ToArray();
 
         public static bool TryRead(

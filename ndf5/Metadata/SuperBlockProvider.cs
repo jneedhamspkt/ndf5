@@ -5,14 +5,14 @@ using ndf5.Exceptions;
 
 namespace ndf5.Metadata
 {
-    public class Hdf5SuperBlockProvider : ISuperBlockProvider
+    public class SuperBlockProvider : ISuperBlockProvider
     {
         private readonly IStreamProvider 
             mrStreamProvider;
         FormatSignatureAndVersionInfo 
             mrFormatSignatureAndVersionInfo;
 
-        public Hdf5SuperBlockProvider(
+        public SuperBlockProvider(
             IStreamProvider aStreamProvider,
             FormatSignatureAndVersionInfo aFormatSignatureAndVersionInfo)
         {
@@ -126,12 +126,12 @@ namespace ndf5.Metadata
                     byte[]
                         fV1Buffer = new byte[fcV1FeildBytes];
 
-                    if (fcV1FeildBytes != fStream.Read(fHeadbuffer, 0, fcV1FeildBytes))
+                    if (fcV1FeildBytes != fStream.Read(fV1Buffer, 0, fcV1FeildBytes))
                         throw new EndOfStreamException("Could not read Superblock");
 
                     aContainer.IndexedStorageInternalNodeK = BitConverter.ToUInt16(fV1Buffer, 0);
 
-                    if (BitConverter.ToUInt32(fHeadbuffer, 2) != 0)
+                    if (BitConverter.ToUInt16(fV1Buffer, 2) != 0)
                         throw new InvalidDataException("Reserved bytes expected to be zero");
                 }
                 aContainer.BaseAddress = aContainer.LocationAddress;

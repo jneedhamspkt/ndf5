@@ -40,7 +40,7 @@ namespace ndf5
 
         Hdf5File()
         {
-            mrFileData.Register<ISuperBlockProvider, Hdf5SuperBlockProvider>().AsSingleton();
+            mrFileData.Register<ISuperBlockProvider, SuperBlockProvider>().AsSingleton();
             mrFileData.Register<ISuperBlock>((arg1, arg2) =>
                  arg1.Resolve<ISuperBlockProvider>().SuperBlock);
         }
