@@ -9,8 +9,8 @@ namespace ndf5.Streams
     /// <summary>
     /// Arbitrates a single stream across multiple request acesses;
     /// </summary>
-    internal class SimpleSingleStreamProvider : 
-        IStreamProvider
+    public class SimpleSingleStreamProvider : 
+        IStreamProvider, IDisposable
     {
         private readonly Stream 
             mrSourceStream;
@@ -20,7 +20,12 @@ namespace ndf5.Streams
             Stream aSourceStream)
         {
             mrSourceStream = aSourceStream;
-        }  
+        }
+
+        public void Dispose()
+        {
+            mrSourceStream.Dispose();
+        }
 
         public Stream GetStream(StreamRequestArguments aArguments)
         {

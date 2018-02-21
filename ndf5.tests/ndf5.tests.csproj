@@ -4,6 +4,7 @@
     <TargetFramework>netcoreapp2.0</TargetFramework>
 
     <IsPackable>false</IsPackable>
+    <StartupObject>ndf5.tests.RunTests</StartupObject>
   </PropertyGroup>
 
   <ItemGroup>

@@ -3,6 +3,9 @@ using System.IO;
 using NUnit.Framework;
 using Moq;
 
+using StreamProvider = ndf5.Streams.IStreamProvider;
+using StreamRequest = ndf5.Streams.StreamRequestArguments;
+
 namespace ndf5.tests.Metadata
 {
     [TestFixture]
@@ -24,8 +27,8 @@ namespace ndf5.tests.Metadata
             {
                 //Arrange
                 Mock<ndf5.Streams.IStreamProvider>
-                         fStreamProvider = new Mock<Streams.IStreamProvider>(MockBehavior.Loose);
-                fStreamProvider.Setup(a=>a.GetStream(It.IsAny<ndf5.Streams.StreamRequestArguments>())).Returns(fBuffer);
+                         fStreamProvider = new Mock<StreamProvider>(MockBehavior.Loose);
+                fStreamProvider.Setup(a=>a.GetStream(It.IsAny<StreamRequest>())).Returns(fBuffer);
                     
                     
                 using(BinaryWriter fwriter = new BinaryWriter(fBuffer))
@@ -147,8 +150,8 @@ namespace ndf5.tests.Metadata
             {
                 //Arrange
                 Mock<ndf5.Streams.IStreamProvider>
-                         fStreamProvider = new Mock<Streams.IStreamProvider>(MockBehavior.Loose);
-                fStreamProvider.Setup(a => a.GetStream(It.IsAny<ndf5.Streams.StreamRequestArguments>())).Returns(fBuffer);
+                         fStreamProvider = new Mock<StreamProvider>(MockBehavior.Loose);
+                fStreamProvider.Setup(a => a.GetStream(It.IsAny<StreamRequest>())).Returns(fBuffer);
 
 
                 using (BinaryWriter fwriter = new BinaryWriter(fBuffer))
