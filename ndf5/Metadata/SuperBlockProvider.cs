@@ -60,6 +60,10 @@ namespace ndf5.Metadata
             public long EndOfFileAddress { get; set; }
 
             public long? DriverInformationBlockAddress { get; set; }
+
+            public long? RootGroupAddress { get; set; }
+
+            public object RootGroupSymbolTableEntry { get; set; }
         }
 
         public ISuperBlock SuperBlock
@@ -205,7 +209,9 @@ namespace ndf5.Metadata
                         throw new InvalidDataException("No End Of file Adddress Specified");
                     aContainer.EndOfFileAddress = fEndOfFileAddress.Value;
 
-                    //TODO: Handle Root groups
+                    if (!fRootGroupAddress.HasValue)
+                        throw new InvalidDataException("No Root Group Specified");
+                    aContainer.RootGroupAddress = fRootGroupAddress;
                 }
 
             }

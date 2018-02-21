@@ -110,9 +110,19 @@ namespace ndf5.Metadata
         long? DriverInformationBlockAddress { get; }
 
 
-        //TODO: Add Root Group Node / Entry
-
         //TODO: Add Superblock Extension
+
+        /// <summary>
+        /// Gets the root group address, if Null, use the RootGroupSymbolTableEntry
+        /// </summary>
+        /// <value>The root group address.</value>
+        long? RootGroupAddress { get; }
+
+        /// <summary>
+        /// Gets the root group symbol table entry.
+        /// </summary>
+        /// <value>The root group symbol table entry.</value>
+        object RootGroupSymbolTableEntry { get; }
 
     }
 }

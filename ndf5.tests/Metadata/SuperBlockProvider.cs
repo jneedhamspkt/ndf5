@@ -224,9 +224,10 @@ namespace ndf5.tests.Metadata
 
                         case 8:
                             Assert.That(fSuperBlock.BaseAddress, Is.EqualTo(0x10203040AAAAAAAA), "Incorrect Base Address");
+                            // TODO: Test Superblock extension
                             //Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x4BBBBBBB05060708), "Incorrect Address of File Free space Info");
                             Assert.That(fSuperBlock.EndOfFileAddress, Is.EqualTo(0x50A0B0C0CCCCCCCC), "Incorrect End of File Address");
-                            //Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Driver Information Block Address");
+                            Assert.That(fSuperBlock.RootGroupAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Super block address");
                             break;
                     }
                 }
