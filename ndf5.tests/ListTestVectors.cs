@@ -13,19 +13,27 @@ namespace ndf5.tests
                 Assembly
                 fAssembly = Assembly.GetExecutingAssembly();
 
-                using (Stream fTestStream = fAssembly.GetManifestResourceStream(fFile))
+                try
                 {
-                    using (Hdf5File fTest = Hdf5File.Open(fTestStream))
+                    using (Stream fTestStream = fAssembly.GetManifestResourceStream(fFile))
                     {
-                        ndf5.Metadata.ISuperBlock
-                            fSuperBlock = fTest.SuperBlock;
+                        using (Hdf5File fTest = Hdf5File.Open(fTestStream))
+                        {
+                            ndf5.Metadata.ISuperBlock
+                                fSuperBlock = fTest.SuperBlock;
 
-                        Console.WriteLine(
-                            $"{fFile.Replace("ndf5.tests.TestData.","").PadRight(40)}| " +
-                            $"SBVersion:{fSuperBlock.SuperBlockVersion:X} O:{fSuperBlock.SizeOfOffsets}"+
-                            $"L:{fSuperBlock.SizeOfLengths} GiK:{fSuperBlock.GroupInternalNodeK} " +
-                            $"GlK: {fSuperBlock.GroupLeafNodeK} IsiK:{fSuperBlock.IndexedStorageInternalNodeK}");
+                            Console.WriteLine(
+                                $"{fFile.Replace("ndf5.tests.TestData.", "").PadRight(40)}| " +
+                                $"SBVersion:{fSuperBlock.SuperBlockVersion:X} O:{fSuperBlock.SizeOfOffsets} " +
+                                $"L:{fSuperBlock.SizeOfLengths} GiK:{fSuperBlock.GroupInternalNodeK} " +
+                                $"GlK: {fSuperBlock.GroupLeafNodeK} IsiK:{fSuperBlock.IndexedStorageInternalNodeK}");
+                        }
                     }
+                }
+                catch(Exception fException)
+                {
+                    Console.WriteLine(
+                        $"{fFile.Replace("ndf5.tests.TestData.", "").PadRight(40)}| {fException.Message}");
                 }
             }
             return 0;
