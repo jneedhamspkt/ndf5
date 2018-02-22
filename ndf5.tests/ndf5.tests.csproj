@@ -22,9 +22,6 @@
     <Folder Include="TestData\Hdf5TestVectors\" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Remove="UnitTest1.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Remove="TestData\Hdf5Examples\h5ex_d_alloc.h5" />
     <None Remove="TestData\Hdf5Examples\h5ex_d_checksum.h5" />
     <None Remove="TestData\Hdf5Examples\h5ex_d_chunk.h5" />

@@ -6,6 +6,8 @@ using System.IO;
 
 using NUnit.Framework;
 
+using Sig = ndf5.Metadata.FormatSignatureAndVersionInfo;
+
 namespace ndf5.tests
 {
     [TestFixture]
@@ -19,7 +21,22 @@ namespace ndf5.tests
                     fAssembly = Assembly.GetExecutingAssembly();
                 string[]
                     fResources = fAssembly.GetManifestResourceNames();
-                return fResources.Where(a => a.EndsWith(".h5", StringComparison.InvariantCulture));
+
+                return fResources
+                    //Hdf5 Files only
+                    .Where(a => a.EndsWith(".h5", StringComparison.InvariantCulture))
+                    //No Multi file Parts 
+                    .Where(a =>
+                    {
+                        using (Stream fTestStream = fAssembly.GetManifestResourceStream(a))
+                        {
+                            Sig
+                                fDummy;
+                            return Sig.TryRead(fTestStream, out fDummy);
+                        }
+                    })
+                    //No Multi file Heads
+                    .Where(a=>!a.Contains("multi_file"));
             }
         }
 

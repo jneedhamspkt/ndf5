@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <Compile Remove="Class1.cs" />
+    <Compile Remove="Checksums\Lookup3.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\External\TinyIoC\src\TinyIoC\TinyIoC.cs">
@@ -19,6 +20,7 @@
     <Folder Include="Streams\" />
     <Folder Include="Exceptions\" />
     <Folder Include="Infrastructure\BTrees\" />
+    <Folder Include="Checksums\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />
