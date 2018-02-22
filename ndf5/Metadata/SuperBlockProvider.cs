@@ -47,9 +47,9 @@ namespace ndf5.Metadata
 
             public FileConsistencyFlags? FileConsistencyFlags { get; set; }
 
-            public ushort GroupLeafNodeK { get; set; }
+            public ushort GroupLeafNodeK { get; set; } = 4;
 
-            public ushort GroupInternalNodeK { get; set; }
+            public ushort GroupInternalNodeK { get; set; } = 16;
 
             public ushort IndexedStorageInternalNodeK { get; set; }
 

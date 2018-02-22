@@ -18,6 +18,7 @@
     <Folder Include="Objects\" />
     <Folder Include="Streams\" />
     <Folder Include="Exceptions\" />
+    <Folder Include="Infrastructure\BTrees\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />
