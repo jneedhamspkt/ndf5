@@ -6,7 +6,6 @@
 
   <ItemGroup>
     <Compile Remove="Class1.cs" />
-    <Compile Remove="Checksums\Lookup3.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\External\TinyIoC\src\TinyIoC\TinyIoC.cs">
