@@ -1,6 +1,8 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Runtime.CompilerServices;
 namespace ndf5.Checksums
 {
@@ -8,6 +10,8 @@ namespace ndf5.Checksums
     /// This Class is an adaptation of lookup3.c, by Bob Jenkins, May 2006, Public Domain.
     /// </summary>
     /// <remarks>
+    /// THIS IS NOT A CRYPTOGRAPHIC HASH, obviously, (it's only 32 bits)
+    /// 
     /// Origonal remarks from http://www.burtleburtle.net/bob/c/lookup3.c below:
     /// 
     /// These are functions for producing 32-bit hashes for hash table lookup.
@@ -42,8 +46,14 @@ namespace ndf5.Checksums
     /// mixing with 12*3 instructions on 3 integers than you can with 3 instructions
     /// on 1 byte), but shoehorning those bytes into integers efficiently is messy.
     /// </remarks>
-    public static class Lookup3
+    public class Lookup3 : HashAlgorithm
     {
+        /// <summary>
+        /// Becasue lookup 3 seeds the lenght, this class can only work if 
+        /// the hash is comupted AFTER we have all of the data 
+        /// </summary>
+        List<byte[]>
+            mrBytesToHash = new List<byte[]>();
 
         /// <summary>
         /// Rotate the specified Integer X by K bits .
@@ -215,6 +225,34 @@ namespace ndf5.Checksums
 
             Final(ref a, ref b, ref c);
             return c;
+        }
+
+        protected override void HashCore(byte[] array, int ibStart, int cbSize)
+        {
+            byte[] fBytes = array.Skip(ibStart).Take(cbSize).ToArray();
+            mrBytesToHash.Add(fBytes);
+        }
+
+        public override int HashSize { get => 32; }
+
+        protected override byte[] HashFinal()
+        {
+            uint
+                fHash = ComputeHash(mrBytesToHash.SelectMany(a=>a).ToArray());
+            byte[]
+                fToReturn = new byte[4];
+
+            //Use BinaryWriter becase we alwys want little endian
+            using (MemoryStream fStream = new MemoryStream(fToReturn))
+                new BinaryWriter(fStream).Write(fHash);
+            
+            return fToReturn;
+
+        }
+
+        public override void Initialize()
+        {
+            mrBytesToHash.Clear();
         }
     }
 }

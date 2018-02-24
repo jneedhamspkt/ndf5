@@ -14,7 +14,7 @@ namespace ndf5.tests.Checksums
         [TestOf(typeof(Test))]
         public static void ZeroTest()
         {
-            Assert.That(Test.ComputeHash(new byte[0]), 
+            Assert.That(Test.ComputeHash(new byte[0]),
                         Is.EqualTo(0xDEADBEEF),
                         "Incorrect Zero Byte Hash");
         }
@@ -50,6 +50,30 @@ namespace ndf5.tests.Checksums
                     Is.EqualTo(fExpected[i]),
                     "Incorrect Hash");
             }
+        }
+
+        [Test]
+        [TestOf(typeof(Test))]
+        public static void Test_continuation_of_hash()
+        {
+            byte[]
+                fTestBytes = Encoding.ASCII.GetBytes(
+                    "This is the time for all good men to come to the aid of their country..."),
+            fTestBytes2 = fTestBytes.Reverse().ToArray();
+
+            uint
+                fSingle = Test.ComputeHash(fTestBytes.Concat(fTestBytes2).ToArray());
+
+            Test
+                fTwoPartHash = new Test();
+            fTwoPartHash.ComputeHash(fTestBytes, 0, fTestBytes.Length);
+            fTwoPartHash.ComputeHash(fTestBytes2, 0, fTestBytes2.Length);
+
+            uint
+                fTwoPart;
+            using (System.IO.MemoryStream fStream = new System.IO.MemoryStream(fTwoPartHash.Hash))
+                fTwoPart = new System.IO.BinaryReader(fStream).ReadUInt32();
+            Assert.That(fTwoPart, Is.EqualTo(fSingle), "Init value should allow continuation");
         }
     }
 }
