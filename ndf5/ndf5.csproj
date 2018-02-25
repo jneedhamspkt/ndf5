@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <Compile Remove="Class1.cs" />
+    <Compile Remove="Infrastructure\BTrees\V2\Type.cs" />
+    <Compile Remove="Streams\IStreamResizer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\External\TinyIoC\src\TinyIoC\TinyIoC.cs">
@@ -20,6 +22,9 @@
     <Folder Include="Exceptions\" />
     <Folder Include="Infrastructure\BTrees\" />
     <Folder Include="Checksums\" />
+    <Folder Include="Infrastructure\BTrees\V1\" />
+    <Folder Include="Infrastructure\BTrees\V2\" />
+    <Folder Include="Infrastructure\Heaps\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />

@@ -10,17 +10,12 @@ namespace ndf5.Streams
     /// </summary>
     public class Hdf5Writer : Hdf5Reader
     {
-        private readonly IStreamResizer
-            mrStreamResizer;
-
         public Hdf5Writer(
             Stream aBaseStream,
-            ISuperBlock aSuperBlock,
-            IStreamResizer aStreamResizer) : base(aBaseStream, aSuperBlock)
+            ISuperBlock aSuperBlock) : base(aBaseStream, aSuperBlock)
         {
             if (!ContainedStream.CanWrite)
                 throw new ArgumentException("Cannot Write to stream");
-            mrStreamResizer = aStreamResizer;
         }
 
         public override bool CanWrite => true;
@@ -28,8 +23,10 @@ namespace ndf5.Streams
         private void GrowIfNeeded(
             int aBytes)
         {
-            if(this.Position + aBytes >= this.Length)
-                SetLength(this.Position + aBytes + 1);   
+            if (this.Position + aBytes >= this.Length)
+            {
+                SetLength(this.Position + aBytes + 1);
+            }
         }
 
         public override void WriteByte(byte value)
