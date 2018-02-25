@@ -120,8 +120,8 @@ namespace ndf5.Metadata
                 if (fHeadbuffer[6] != 0)
                     throw new InvalidDataException("Reserved byte expected to be zero");
 
-                aContainer.GroupLeafNodeK = BitConverter.ToUInt16(fHeadbuffer,7);
-                aContainer.GroupInternalNodeK = BitConverter.ToUInt16(fHeadbuffer, 9);
+                aContainer.GroupLeafNodeK = (ushort)(fHeadbuffer[7] | (fHeadbuffer[8] << 8));
+                aContainer.GroupInternalNodeK = (ushort)(fHeadbuffer[9] | (fHeadbuffer[10] << 8));
 
                 if(aIsV1)
                 {
@@ -133,9 +133,9 @@ namespace ndf5.Metadata
                     if (fcV1FeildBytes != fStream.Read(fV1Buffer, 0, fcV1FeildBytes))
                         throw new EndOfStreamException("Could not read Superblock");
 
-                    aContainer.IndexedStorageInternalNodeK = BitConverter.ToUInt16(fV1Buffer, 0);
+                    aContainer.IndexedStorageInternalNodeK = (ushort)(fV1Buffer[0] + (fV1Buffer[1] << 8));
 
-                    if (BitConverter.ToUInt16(fV1Buffer, 2) != 0)
+                    if (!(fV1Buffer[2] == 0 || fV1Buffer[3] == 0))
                         throw new InvalidDataException("Reserved bytes expected to be zero");
                 }
                 aContainer.BaseAddress = aContainer.LocationAddress;

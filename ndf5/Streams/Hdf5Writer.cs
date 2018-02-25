@@ -8,7 +8,7 @@ namespace ndf5.Streams
     /// <summary>
     /// Hdf5 writer writes AND reads to HDF file streams
     /// </summary>
-    internal class Hdf5Writer : Hdf5Reader
+    public class Hdf5Writer : Hdf5Reader
     {
         private readonly IStreamResizer
             mrStreamResizer;

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.CompilerServices;
+
 using ndf5.Metadata;
 
 namespace ndf5.Streams
 {
-    internal class Hdf5Reader : StreamContainer
+    public class Hdf5Reader : StreamContainer
     {
         internal protected readonly ISuperBlock
             mrSuperBlock;
@@ -62,20 +64,35 @@ namespace ndf5.Streams
             switch (aSize)
             {
                 case 2:
-                    ushort 
-                        fShort = BitConverter.ToUInt16(fBuffer, 0);
+                    ushort
+                        fShort = (ushort)(
+                            (fBuffer[0]) +
+                            (fBuffer[1] << 8));
                     if (fShort == ushort.MaxValue)
                         return null;
                     return fShort;
                 case 4:
-                    uint
-                        fUint = BitConverter.ToUInt32(fBuffer, 0);
+                    uint fUint = (uint)(
+                            (fBuffer[0]) + 
+                            (fBuffer[1] << 8) +
+                            (fBuffer[2] << 16) + 
+                            (fBuffer[3] << 24));
                     if (fUint == uint.MaxValue)
                         return null;
                     return fUint;
                 case 8:
+                    ulong fLow = (ulong)(
+                            (fBuffer[0]) |
+                            (fBuffer[1] << 8) |
+                            (fBuffer[2] << 16) |
+                            (fBuffer[3] << 24));
+                    ulong fHigh = 
+                        ((ulong)fBuffer[4] << 32) |
+                        ((ulong)fBuffer[5] << 40) |
+                        ((ulong)fBuffer[6] << 48) |
+                        ((ulong)fBuffer[7] << 56);
                     ulong
-                        fUlong = BitConverter.ToUInt64(fBuffer, 0);
+                        fUlong = (fHigh | (uint.MaxValue & fLow));
                     if (fUlong == ulong.MaxValue)
                         return null;
                     if (fUlong > (ulong)long.MaxValue)

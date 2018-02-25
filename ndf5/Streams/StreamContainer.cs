@@ -6,7 +6,7 @@ namespace ndf5.Streams
     /// Class that provides access to the source file / stream, but won't allow 
     /// the caller to dispose contained stream
     /// </summary>
-    internal abstract class StreamContainer : Stream
+    public abstract class StreamContainer : Stream
     {
         protected Stream
             ContainedStream;
