@@ -40,6 +40,10 @@ namespace ndf5.tests.Streams
             {
                 Assert.That(fTestStream.ReadLength(), Is.EqualTo(0x0b0a), "Should read little endian short");
                 Assert.That(fTestStream.ReadOffset(), Is.EqualTo(0x0d0c), "Should read little endian short");
+
+                fStream.Seek(0, SeekOrigin.Begin);
+                Assert.That(fTestStream.ReadUInt16(), Is.EqualTo(0x0b0a), "Should read little endian short");
+                Assert.That(fTestStream.ReadUInt16(), Is.EqualTo(0x0d0c), "Should read little endian short");
             }
         }
 
@@ -56,6 +60,10 @@ namespace ndf5.tests.Streams
             {
                 Assert.That(fTestStream.ReadLength(), Is.EqualTo(0x03020100), "Should read little endian uint");
                 Assert.That(fTestStream.ReadOffset(), Is.EqualTo(0x07060504), "Should read little endian uint");
+
+                fStream.Seek(0, SeekOrigin.Begin);
+                Assert.That(fTestStream.ReadUInt32(), Is.EqualTo(0x03020100), "Should read little endian uint");
+                Assert.That(fTestStream.ReadUInt32(), Is.EqualTo(0x07060504), "Should read little endian uint");
             }
         }
 
@@ -73,6 +81,10 @@ namespace ndf5.tests.Streams
             {
                 Assert.That(fTestStream.ReadLength(), Is.EqualTo(0x0706050403020100), "Should read little endian long");
                 Assert.That(fTestStream.ReadOffset(), Is.EqualTo(0x0f0e0d0c0b0a0908), "Should read little endian long");
+            
+                fStream.Seek(0, SeekOrigin.Begin);
+                Assert.That(fTestStream.ReadUInt64(), Is.EqualTo(0x0706050403020100), "Should read little endian long");
+                Assert.That(fTestStream.ReadUInt64(), Is.EqualTo(0x0f0e0d0c0b0a0908), "Should read little endian long");
             }
         }
 

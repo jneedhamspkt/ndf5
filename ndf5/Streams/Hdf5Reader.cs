@@ -103,6 +103,64 @@ namespace ndf5.Streams
             }
         }
 
+        /// <summary>
+        /// Reads the a Little Endian 16 bit integer
+        /// </summary>
+        /// <returns>The read 16 bit number</returns>
+        public ushort ReadUInt16()
+        {
+            byte[]
+                fBuffer = new byte[2];
+            Read(fBuffer, 0, 2);
+            ushort
+                fShort = (ushort)(
+                    (fBuffer[0]) +
+                    (fBuffer[1] << 8));
+            return fShort;
+        }
+
+        /// <summary>
+        /// Reads the a Little Endian 32 bit integer
+        /// </summary>
+        /// <returns>The read 32 bit number</returns>
+        public uint ReadUInt32()
+        {
+            byte[]
+                fBuffer = new byte[4];
+            Read(fBuffer, 0, 4);
+            uint fUint = (uint)(
+                (fBuffer[0]) +
+                (fBuffer[1] << 8) +
+                (fBuffer[2] << 16) +
+                (fBuffer[3] << 24));
+            return fUint;
+        }
+
+        /// <summary>
+        /// Reads the a Little Endian 64 bit integer
+        /// </summary>
+        /// <returns>The read 64 bit number</returns>
+        public ulong ReadUInt64()
+        {
+            byte[]
+                fBuffer = new byte[8];
+            Read(fBuffer, 0, 8);
+            ulong fLow = (ulong)(
+                            (fBuffer[0]) |
+                            (fBuffer[1] << 8) |
+                            (fBuffer[2] << 16) |
+                            (fBuffer[3] << 24));
+            ulong fHigh =
+                ((ulong)fBuffer[4] << 32) |
+                ((ulong)fBuffer[5] << 40) |
+                ((ulong)fBuffer[6] << 48) |
+                ((ulong)fBuffer[7] << 56);
+            ulong
+                fUlong = (fHigh | (uint.MaxValue & fLow));
+            return fUlong;
+        }
+
+
         public override void SetLength(long value)
         {
             throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
@@ -127,5 +185,7 @@ namespace ndf5.Streams
         {
             //Nothing to do
         }
+
+
     }
 }

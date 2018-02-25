@@ -191,6 +191,17 @@ namespace ndf5.tests.Metadata
 
                     fwriter.Flush();
 
+                    //Now add the checksum
+                    long 
+                        fLength = fBuffer.Position;
+                    fBuffer.Seek(0, SeekOrigin.Begin);
+                    byte[]
+                        fChecksumBytes = new byte[fLength];
+                    fBuffer.Read(fChecksumBytes, 0, (int)fLength);
+                    fwriter.Write(ndf5.Checksums.Lookup3.ComputeHash(
+                        fChecksumBytes));
+                    fwriter.Flush();
+
 
                     //Act
                     ndf5.Metadata.SuperBlockProvider
