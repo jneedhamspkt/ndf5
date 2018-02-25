@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using ndf5.Streams;
 using ndf5.Exceptions;
 
@@ -172,6 +173,8 @@ namespace ndf5.Metadata
                     aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length,
                     SeekOrigin.Begin);
 
+
+
                 const byte
                     fcHeaderBytes = 3;
                 byte[]
@@ -185,13 +188,21 @@ namespace ndf5.Metadata
                 byte
                     fFlags = fHeadbuffer[2];
 
+
                 if ((fFlags & ~((int)(FileConsistencyFlags.SwmrAccessEngaged | FileConsistencyFlags.WriteAccessOpen))) != 0)
                     throw new InvalidDataException($"Unexpected {nameof(FileConsistencyFlags)}: 0x{fFlags:X}");
 
                 if (aIsV3)
                     aContainer.FileConsistencyFlags = (FileConsistencyFlags)fFlags;
 
-                using (Hdf5Reader fReader = new Hdf5Reader(fStream, aContainer))
+                int
+                    fFieldByteCount = aContainer.SizeOfOffsets * 4 + 4;
+                byte[]
+                    fFieldBytes = new byte[fFieldByteCount];
+                fStream.Read(fFieldBytes, 0, fFieldByteCount);
+
+                using (MemoryStream fMemoryStream = new MemoryStream(fFieldBytes))
+                using (Hdf5Reader fReader = new Hdf5Reader(fMemoryStream, aContainer))
                 {
                     long?
                         fBaseAddress = fReader.ReadOffset(),
@@ -212,6 +223,15 @@ namespace ndf5.Metadata
                     if (!fRootGroupAddress.HasValue)
                         throw new InvalidDataException("No Root Group Specified");
                     aContainer.RootGroupAddress = fRootGroupAddress;
+
+                    uint fExpectedCheckSum = Checksums.Lookup3.ComputeHash(
+                        mrFormatSignatureAndVersionInfo.AsBytes
+                        .Concat(fHeadbuffer)
+                        .Concat(fFieldBytes.Take(fFieldByteCount - 4))
+                        .ToArray());
+
+                    if (fExpectedCheckSum != fReader.ReadUInt32())
+                        throw new InvalidDataException("Bad Checksum");
                 }
 
             }
