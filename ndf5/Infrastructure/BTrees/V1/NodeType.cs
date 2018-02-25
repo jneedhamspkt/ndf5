@@ -4,7 +4,7 @@ namespace ndf5.Infrastructure.BTrees.V1
     /// <summary>
     /// Type of data containd by a V1 Btree
     /// </summary>
-    public enum Type
+    public enum NodeType
     {
         /// <summary>
         /// This tree points to group nodes

@@ -3,7 +3,7 @@ namespace ndf5.Infrastructure.BTrees.V2{
     /// <summary>
     /// Type of data containd by a V2 Btree
     /// </summary>
-    public enum Type
+    public enum NodeType
     {
         /// <summary>
         /// This B-tree is used for testing only. This value should not be used 

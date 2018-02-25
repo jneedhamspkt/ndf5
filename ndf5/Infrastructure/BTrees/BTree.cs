@@ -8,22 +8,17 @@ namespace ndf5.Infrastructure.BTrees
     /// </summary>
     public abstract class BTree
     {
-        private readonly IStreamProvider 
+        private readonly IHdfStreamProvider 
             mrStreamProvider;
-
-        private readonly ISuperBlock
-            mrSuperBlock;
 
         private readonly IStreamSpaceAllocator
             mrStreamSpaceAllocator;
 
         protected BTree(
-            IStreamProvider aStreamProvider,
-            ISuperBlock aSuperBlock,
+            IHdfStreamProvider aStreamProvider,
             IStreamSpaceAllocator aAllocator)
         {
             mrStreamProvider = aStreamProvider;
-            mrSuperBlock = aSuperBlock;
             mrStreamSpaceAllocator = aAllocator;
         }
 
@@ -33,13 +28,8 @@ namespace ndf5.Infrastructure.BTrees
         internal protected void Free(long Address) => 
             mrStreamSpaceAllocator.Free(Address);
 
-        internal protected Hdf5Reader GetReader() => new Hdf5Reader(
-            mrStreamProvider.GetReadonlyStream(),
-            mrSuperBlock);
-
-        internal protected Hdf5Reader GetWriter() => new Hdf5Writer(
-            mrStreamProvider.GetStream(new StreamRequestArguments(true)),
-            mrSuperBlock);
+        internal protected IHdfStreamProvider
+            HdfStreamProvider => mrStreamProvider;
         
     }
 }
