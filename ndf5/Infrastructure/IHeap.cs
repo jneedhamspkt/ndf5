@@ -4,8 +4,20 @@ namespace ndf5.Infrastructure
     /// <summary>
     /// Interface for Geting and freeing memory in a stream
     /// </summary>
-    public interface IStreamSpaceAllocator
+    public interface IHeap
     {
+        /// <summary>
+        /// Absoulte address where objects in this heap reference from
+        /// </summary>
+        /// <value>The base address.</value>
+        long BaseAddress { get; }
+
+        /// <summary>
+        /// The Current size in bytes of this heap
+        /// </summary>
+        /// <value>The size.</value>
+        long Size { get; }
+
         /// <summary>
         /// Allocate the specified aBytes.
         /// </summary>
