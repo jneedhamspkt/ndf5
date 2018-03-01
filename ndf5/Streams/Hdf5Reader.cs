@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 
@@ -43,6 +44,30 @@ namespace ndf5.Streams
                         offset + mrSuperBlock.EndOfFileAddress,
                         SeekOrigin.Begin);
                 default: throw new InvalidOperationException();
+            }
+        }
+
+        /// <summary>
+        /// Read an identical number of bytes as are in <c>aSignature</c>
+        /// to verify identical data;
+        /// </summary>
+        /// <param name="signature">Signature.</param>
+        internal void VerifySignature(
+            IReadOnlyList<byte> aSignature)
+        {
+            int
+                fBytes = aSignature.Count;
+            byte[]
+                fSource = new byte[fBytes];
+            if (fBytes != Read(fSource, 0, fBytes))
+                throw new EndOfStreamException();
+            for (int i = 0; i < fBytes; ++i)
+            {
+                if (fSource[i] != aSignature[i])
+                {
+                    throw new InvalidDataException($"Expected: {String.Join(", ", aSignature)} "
+                                                  + $"but got: {String.Join(", ", fBytes)} ");
+                }
             }
         }
 
