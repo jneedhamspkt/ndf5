@@ -11,12 +11,12 @@ namespace ndf5.Infrastructure.BTrees
         private readonly IHdfStreamProvider 
             mrStreamProvider;
 
-        private readonly IStreamSpaceAllocator
+        private readonly IHeap
             mrStreamSpaceAllocator;
 
         protected BTree(
             IHdfStreamProvider aStreamProvider,
-            IStreamSpaceAllocator aAllocator)
+            IHeap aAllocator)
         {
             mrStreamProvider = aStreamProvider;
             mrStreamSpaceAllocator = aAllocator;

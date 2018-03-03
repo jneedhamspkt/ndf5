@@ -1,4 +1,6 @@
 ﻿using System;
+using ndf5.Infrastructure.SymbolTable;
+
 namespace ndf5.Metadata
 {
     public interface ISuperBlock
@@ -119,10 +121,10 @@ namespace ndf5.Metadata
         long? RootGroupAddress { get; }
 
         /// <summary>
-        /// Gets the root group symbol table entry.
+        /// Gets the root group symbol table entry. (May be null)
         /// </summary>
         /// <value>The root group symbol table entry.</value>
-        object RootGroupSymbolTableEntry { get; }
+        SymbolTableEntry RootGroupSymbolTableEntry { get; }
 
     }
 }

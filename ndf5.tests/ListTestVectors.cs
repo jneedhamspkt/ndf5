@@ -22,11 +22,16 @@ namespace ndf5.tests
                             ndf5.Metadata.ISuperBlock
                                 fSuperBlock = fTest.SuperBlock;
 
+                            string fRootGroupAddr = fSuperBlock.RootGroupAddress.HasValue 
+                                ? $"0x{fSuperBlock.RootGroupAddress:X16}"
+                                : "null";
+
                             Console.WriteLine(
                                 $"{fFile.Replace("ndf5.tests.TestData.", "").PadRight(40)}| " +
                                 $"SBVersion:{fSuperBlock.SuperBlockVersion:X} O:{fSuperBlock.SizeOfOffsets} " +
                                 $"L:{fSuperBlock.SizeOfLengths} GiK:{fSuperBlock.GroupInternalNodeK} " +
-                                $"GlK: {fSuperBlock.GroupLeafNodeK} IsiK:{fSuperBlock.IndexedStorageInternalNodeK}");
+                                $"GlK: {fSuperBlock.GroupLeafNodeK} IsiK:{fSuperBlock.IndexedStorageInternalNodeK} " +
+                                $"Root Obj Addr: { fRootGroupAddr}");
                         }
                     }
                 }

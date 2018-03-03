@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using ndf5.Streams;
 using ndf5.Exceptions;
+using ndf5.Infrastructure.SymbolTable;
 
 namespace ndf5.Metadata
 {
@@ -62,9 +63,9 @@ namespace ndf5.Metadata
 
             public long? DriverInformationBlockAddress { get; set; }
 
-            public long? RootGroupAddress { get; set; }
+            public long? RootGroupAddress { get; set; } = null;
 
-            public object RootGroupSymbolTableEntry { get; set; }
+            public SymbolTableEntry RootGroupSymbolTableEntry { get; set; } = null;
         }
 
         public ISuperBlock SuperBlock
@@ -147,6 +148,8 @@ namespace ndf5.Metadata
                         fFreeSpaceAddress = fReader.ReadOffset(),
                         fEndOfFileAddress = fReader.ReadOffset(),
                         fDirverInformationBlockAddress = fReader.ReadOffset();
+                    SymbolTableEntry
+                        fRootGroupEntry = SymbolTableEntry.Read(fReader);
 
 
                     if (!fBaseAddress.HasValue)
@@ -157,7 +160,8 @@ namespace ndf5.Metadata
                         throw new InvalidDataException("No End Of file Adddress Specified");
                     aContainer.EndOfFileAddress = fEndOfFileAddress.Value;
                     aContainer.DriverInformationBlockAddress = fDirverInformationBlockAddress;
-
+                    aContainer.RootGroupSymbolTableEntry = fRootGroupEntry;
+                    aContainer.RootGroupAddress = fRootGroupEntry.ObjectHeaderAddress;
                 }
             }
 
