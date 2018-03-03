@@ -50,7 +50,7 @@ namespace ndf5.tests
             {
                 using (Hdf5File fTest = Hdf5File.Open(fTestStream))
                 {
-                    Assert.That(() => fTest.SuperBlock.ToString(), Throws.Nothing);
+                    Assert.That(fTest.SuperBlock.RootGroupAddress, Is.Not.Null);
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace ndf5.tests
 
                     using (Hdf5File fTestFile = Hdf5File.Open(new FileInfo(fTestFileName)))
                     {
-                        Assert.That(() => fTestFile.SuperBlock.ToString(), Throws.Nothing);
+                        Assert.That(fTestFile.SuperBlock.RootGroupAddress, Is.Not.Null);
                     }
                 }
             }
