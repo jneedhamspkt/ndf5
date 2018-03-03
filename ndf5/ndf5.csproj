@@ -25,6 +25,7 @@
     <Folder Include="Infrastructure\BTrees\V1\" />
     <Folder Include="Infrastructure\BTrees\V2\" />
     <Folder Include="Infrastructure\Heaps\" />
+    <Folder Include="Infrastructure\SymbolTable\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />

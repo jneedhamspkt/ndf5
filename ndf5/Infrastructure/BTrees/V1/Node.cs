@@ -94,6 +94,21 @@ namespace ndf5.Infrastructure.BTrees.V1
             this.LeftSibling = aReader.ReadOffset();
             this.RightSibling = aReader.ReadOffset();
         }
+
+        public Node(
+            NodeType aNodeType,
+            byte aNodeLevel,
+            ushort aEntriesUsed,
+            long? aLeftSibling,
+            long? aRightSibling) : base(
+                BTreeVerson.One, null)
+        {
+            this.NodeType = aNodeType;
+            this.NodeLevel = aNodeLevel;
+            this.EntriesUsed = aEntriesUsed;
+            this.LeftSibling = aLeftSibling;
+            this.RightSibling = aRightSibling;
+        }
             
     }
 }
