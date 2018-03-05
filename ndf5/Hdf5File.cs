@@ -4,6 +4,7 @@ using TinyIoC;
 
 using ndf5.Metadata;
 using ndf5.Streams;
+using ndf5.ObjectHeaders;
 
 namespace ndf5
 {
@@ -30,7 +31,10 @@ namespace ndf5
         public FormatSignatureAndVersionInfo
         FormatSignatureAndVersionInfo => mrFileData.Resolve<FormatSignatureAndVersionInfo>(
                 ResolveOptions.Default);
-
+        /// <summary>
+        /// Gets the readonly super block Metadata for this file
+        /// </summary>
+        /// <value>The super block.</value>
         public ISuperBlock
             SuperBlock => mrFileData.Resolve<ISuperBlock>();
 
@@ -43,6 +47,7 @@ namespace ndf5
             mrFileData.Register<ISuperBlockProvider, SuperBlockProvider>().AsSingleton();
             mrFileData.Register<ISuperBlock>((arg1, arg2) =>
                  arg1.Resolve<ISuperBlockProvider>().SuperBlock);
+            mrFileData.Register<IObjectHeaderReader, ObjectHeaderReader>().AsSingleton();
         }
 
         ~Hdf5File()
