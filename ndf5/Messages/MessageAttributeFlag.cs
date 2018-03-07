@@ -8,7 +8,7 @@ namespace ndf5.Messages
     /// Annotaions orignate from <see cref="https://support.hdfgroup.org/HDF5/doc/H5.format.html#V1ObjectHeaderPrefix"/>
     /// </remarks>
     [Flags]
-    internal enum MessageAttributeFlag : byte
+    public enum MessageAttributeFlag : byte
     {
         /// <summary>
         /// If set, the message data is constant. This is used for messages like
