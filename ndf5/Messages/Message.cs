@@ -59,8 +59,11 @@ namespace ndf5.Messages
                     aBytes = 0;
                     return new NilMessage();
 
-                //case MessageType.Dataspace();
-                    
+                case MessageType.Dataspace:
+                    return DataspaceMessage.Read(
+                        aReader,
+                        aLocalMessageSize,
+                        out aBytes);    
 
 
                 default:
