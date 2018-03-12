@@ -2,7 +2,7 @@
 using System.IO;
 namespace ndf5.Messages
 {
-    partial class DataspaceMessage
+    partial class Dataspace
     {
         private class DSHeader
         {

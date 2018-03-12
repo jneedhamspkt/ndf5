@@ -4,9 +4,9 @@ using ndf5.Objects;
 using ndf5.Streams;
 namespace ndf5.Messages
 {
-    partial class DataspaceMessage
+    partial class Dataspace
     {
-        private class Version2 : DataspaceMessage
+        private class Version2 : Dataspace
         {
             [Flags]
             private enum Flags : byte

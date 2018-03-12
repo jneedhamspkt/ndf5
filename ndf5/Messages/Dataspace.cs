@@ -11,7 +11,7 @@ namespace ndf5.Messages
     /// <summary>
     /// Message class for message objects marked as Data Space type
     /// </summary>
-    public partial class DataspaceMessage : Message
+    public partial class Dataspace : Message
     {
         /// <summary>
         /// Gets the type of the data space (Usually simple).
@@ -32,7 +32,7 @@ namespace ndf5.Messages
         /// </summary>
         /// <param name="aDataSpaceType">A data space type.</param>
         /// <param name="aDimensions">A n ordered list of this dataspace's dimensions.</param>
-        public DataspaceMessage(
+        public Dataspace(
             DataSpaceType aDataSpaceType,
             IReadOnlyList<Dimension> aDimensions) : base(MessageType.Dataspace)
         {
@@ -40,7 +40,7 @@ namespace ndf5.Messages
             Dimensions = aDimensions;
         }
 
-        internal static DataspaceMessage Read(
+        internal static Dataspace Read(
             Hdf5Reader aReader,
             long? aLocalMessageSize, 
             out long aBytes)
@@ -49,7 +49,7 @@ namespace ndf5.Messages
                 fHeader = DSHeader.Read(aReader);
             long
                 fMessageBodySize;
-            DataspaceMessage
+            Dataspace
                 fToRetrun;
             long?
                 fBodySize = aLocalMessageSize.HasValue
@@ -73,7 +73,7 @@ namespace ndf5.Messages
                     break;
 
                 default:
-                    throw new UnknownMessageVersion<DataspaceMessage>(fHeader.Version);
+                    throw new UnknownMessageVersion<Dataspace>(fHeader.Version);
             }
             aBytes = DSHeader.Size + fMessageBodySize;
             return fToRetrun;

@@ -57,14 +57,13 @@ namespace ndf5.Messages
             {   
                 case MessageType.NIL:
                     aBytes = 0;
-                    return new NilMessage();
+                    return new Nil();
 
                 case MessageType.Dataspace:
-                    return DataspaceMessage.Read(
+                    return Dataspace.Read(
                         aReader,
                         aLocalMessageSize,
-                        out aBytes);    
-
+                        out aBytes);
 
                 default:
                     if(aReadFlags.HasFlag(MessageAttributeFlag.MustUnderstandToRead))

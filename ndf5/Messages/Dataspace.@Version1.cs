@@ -7,9 +7,9 @@ using ndf5.Objects;
 
 namespace ndf5.Messages
 {
-    partial class DataspaceMessage
+    partial class Dataspace
     {    
-        private class Version1 : DataspaceMessage
+        private class Version1 : Dataspace
         {
             [Flags]
             private enum Flags : byte
