@@ -8,21 +8,21 @@ using ndf5.Objects;
 namespace ndf5.Messages
 {
     partial class DataspaceMessage
-    {
-        [Flags]
-        private enum Flags : byte
-        {
-            HasMax = 1,
-            HasPermutaions = 2
-        }
-            
+    {    
         private class Version1 : DataspaceMessage
         {
+            [Flags]
+            private enum Flags : byte
+            {
+                HasMax = 1,
+                HasPermutaions = 2
+            }
+
             public Version1(
                 DataSpaceType aDataSpaceType,
                 IReadOnlyList<Dimension> aDimensions) : base(aDataSpaceType, aDimensions)
             {
-                
+                //Nothing to do.
             }
 
             public static Version1 ReadAfterHeader(
@@ -31,48 +31,31 @@ namespace ndf5.Messages
                 long? aLocalMessageSize,
                 out long aBytes)
             {
-                long 
-                    fReadlength = (aHeader.Dimensionality * aReader.mrSuperBlock.SizeOfLengths) + sizeof(UInt32);
+                int
+                    fDimCount = aHeader.Dimensionality;
+                long
+                    fReadlength = (fDimCount * aReader.mrSuperBlock.SizeOfLengths) + sizeof(UInt32);
+                if (aLocalMessageSize.HasValue && aLocalMessageSize.Value < fReadlength)
+                    throw new ArgumentException("Specified Local Message Size not long enough");
+
+                aReader.ReadUInt32(); //Read reserved byte
+
                 Flags
                     fHeaderFlags = (Flags)aHeader.Flags;
                 if (fHeaderFlags.HasFlag(Flags.HasPermutaions))
                     throw new NotSupportedException("Permutation index not supported");
                 aBytes = fReadlength;
 
-                int 
-                    fDimCount = aHeader.Dimensionality;
 
-                Dimension[] 
-                    fDimensions;
-
-                long[]
-                    fSizes = Enumerable
-                        .Range(0, fDimCount)
-                        .Select(a => 
-                        {
-                            long? 
-                                fLength = aReader.ReadLength();
-                            if (!fLength.HasValue)
-                                throw new System.IO.InvalidDataException(
-                                    "Dimension lengths must have real values");
-                            return fLength.Value;
-                        })
-                        .ToArray();
-                if (fHeaderFlags.HasFlag(Flags.HasMax))
-                {
-                    fDimensions = fSizes.Zip(
-                        Enumerable.Range(0, fDimCount)
-                            .Select(a => aReader.ReadLength()),
-                        (aLength, aMax) => new Dimension(aLength, aMax))
-                        .ToArray();
-                                        
-                }
-                else
-                {
-                    fDimensions = fSizes.Select(a => new Dimension(a)).ToArray();
-                }
+                Dimension[] fDimensions = ReadDimensions(
+                    aReader, 
+                    fHeaderFlags.HasFlag(Flags.HasMax), 
+                    fDimCount);
+                
                 return new Version1(DataSpaceType.Simple, fDimensions);
             }
+
+
         }
     }
 }
