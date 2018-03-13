@@ -25,7 +25,6 @@ namespace ndf5.tests.Messages
 
         [Test, TestOf(typeof(uMessages.Dataspace))]
         public void Test_Data_Space_V1_Unlimited_Parsing(
-            [Values(2, 4, 8)] int aOffsetBytes,
             [Values(2, 4, 8)] int aLengthBytes,
             [Range(1, 5)] int aDims)
         {
@@ -58,7 +57,7 @@ namespace ndf5.tests.Messages
 
                 Mock<ndf5.Metadata.ISuperBlock>
                     fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);
-                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)aOffsetBytes);
+                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)8);
                 fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
 
                 Hdf5Reader 
@@ -92,7 +91,6 @@ namespace ndf5.tests.Messages
 
         [Test, TestOf(typeof(uMessages.Dataspace))]
         public void Test_Data_Space_V1_Limited_Parsing(
-            [Values(2, 4, 8)] int aOffsetBytes,
             [Values(2, 4, 8)] int aLengthBytes,
             [Range(1, 5)] int aDims)
         {
@@ -127,7 +125,7 @@ namespace ndf5.tests.Messages
 
                 Mock<ndf5.Metadata.ISuperBlock>
                     fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);
-                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)aOffsetBytes);
+                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)8);
                 fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
 
                 Hdf5Reader
@@ -158,7 +156,6 @@ namespace ndf5.tests.Messages
 
         [Test, TestOf(typeof(uMessages.Dataspace))]
         public void Test_Data_Space_TooShortError(
-            [Values(2, 4, 8)] int aOffsetBytes,
             [Values(2, 4, 8)] int aLengthBytes,
             [Range(2, 5)] int aTooShortLength,
             [Range(1, 2)] int aVersion)
@@ -196,7 +193,7 @@ namespace ndf5.tests.Messages
 
                 Mock<ndf5.Metadata.ISuperBlock>
                     fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);
-                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)aOffsetBytes);
+                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)8);
                 fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
 
                 Hdf5Reader
@@ -214,9 +211,6 @@ namespace ndf5.tests.Messages
                 },
                 Throws.ArgumentException,
                 "Stream should be too short to read");
-
-
-
             }
         }
 
