@@ -31,6 +31,13 @@ namespace ndf5.Messages
                     fDimCount = aHeader.Dimensionality;
                 long
                     fReadlength = (fDimCount * aReader.mrSuperBlock.SizeOfLengths);
+                Flags
+                    fHeaderFlags = (Flags)aHeader.Flags;
+                bool
+                    fHasMax = fHeaderFlags.HasFlag(Flags.HasMax);
+                if (fHasMax)
+                    fReadlength *= 2;
+
                 if (aLocalMessageSize.HasValue && aLocalMessageSize.Value < fReadlength)
                     throw new ArgumentException("Specified Local Message Size not long enough");
                 DataSpaceType
@@ -46,14 +53,13 @@ namespace ndf5.Messages
                         throw new System.IO.InvalidDataException("Unknown DataSpaceType");
                 }
 
-                Flags
-                    fHeaderFlags = (Flags)aHeader.Flags;
+
                 aBytes = fReadlength;
 
                 Dimension[] 
                     fDimensions = ReadDimensions(
                         aReader,
-                        fHeaderFlags.HasFlag(Flags.HasMax),
+                        fHasMax,
                         fDimCount);
 
                 return new Version2(fType, fDimensions);
