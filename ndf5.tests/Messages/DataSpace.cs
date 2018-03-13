@@ -13,7 +13,7 @@ namespace ndf5.tests.Messages
     [TestFixture]
     public class DataSpace
     {
-        private static readonly uObjects.Dimension[] 
+        private static readonly uObjects.Dimension[]
             TestDimensions = new uObjects.Dimension[]
         {
             new uObjects.Dimension(1, 2),
@@ -61,7 +61,7 @@ namespace ndf5.tests.Messages
                 fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)8);
                 fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
 
-                Hdf5Reader 
+                Hdf5Reader
                     fReader = new Hdf5Reader(fTestSource, fSuperBlock.Object);
 
                 //Act
@@ -89,6 +89,9 @@ namespace ndf5.tests.Messages
                 Assert.That(fRead,
                     Is.EqualTo(fTestSource.Position),
                     "Incorrect Read Bytes");
+                Assert.That(fResult.DataSpaceType,
+                    Is.EqualTo(uObjects.DataSpaceType.Simple),
+                    "Incorrect object type");
             }
         }
 
@@ -157,6 +160,9 @@ namespace ndf5.tests.Messages
                 Assert.That(fRead,
                     Is.EqualTo(fTestSource.Position),
                     "Incorrect Read Bytes");
+                Assert.That(fResult.DataSpaceType,
+                    Is.EqualTo(uObjects.DataSpaceType.Simple),
+                    "Incorrect object type");
             }
         }
 
@@ -287,6 +293,9 @@ namespace ndf5.tests.Messages
                 Assert.That(fRead,
                     Is.EqualTo(fTestSource.Position),
                     "Incorrect Read Bytes");
+                Assert.That(fResult.DataSpaceType,
+                    Is.EqualTo(uObjects.DataSpaceType.Simple),
+                    "Incorrect object type");
             }
         }
 
@@ -315,7 +324,7 @@ namespace ndf5.tests.Messages
                 fWriter.Write((byte)2);     //Version 2
                 fWriter.Write((byte)aDims); //Dimensionality
                 fWriter.Write((byte)0x1);   //Flags, Has Max
-                fWriter.Write((byte)(byte)ndf5.Objects.DataSpaceType.Simple);
+                fWriter.Write((byte)uObjects.DataSpaceType.Simple);
 
                 for (int i = 0; i < aDims; ++i)
                     fWriteLength((ulong)TestDimensions[i].Size);
@@ -354,6 +363,61 @@ namespace ndf5.tests.Messages
                 Assert.That(fRead,
                     Is.EqualTo(fTestSource.Position),
                     "Incorrect Read Bytes");
+                Assert.That(fResult.DataSpaceType,
+                    Is.EqualTo(uObjects.DataSpaceType.Simple),
+                    "Incorrect object type");
+            }
+        }
+
+        [Test, TestOf(typeof(uMessages.Dataspace))]
+        public void Test_Data_Space_V2_Special_Parsing(
+            [Values(uObjects.DataSpaceType.Null,
+                    uObjects.DataSpaceType.Scaler)]
+            uObjects.DataSpaceType aType)
+        {
+            using (Stream fTestSource = new MemoryStream())
+            using (BinaryWriter fWriter = new BinaryWriter(fTestSource))
+            {
+                fWriter.Write((byte)2);     //Version 2
+                fWriter.Write((byte)0); //Dimensionality
+                fWriter.Write((byte)0x1);   //Flags, Has Max
+                fWriter.Write((byte)aType);
+
+                fTestSource.Seek(0, SeekOrigin.Begin);
+
+                Mock<ndf5.Metadata.ISuperBlock>
+                    fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);
+                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)8);
+                fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)8);
+
+                Hdf5Reader
+                    fReader = new Hdf5Reader(fTestSource, fSuperBlock.Object);
+
+                //Act
+                long fRead;
+                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                    fReader,
+                    uMessages.MessageType.Dataspace,
+                    uMessages.MessageAttributeFlag.None,
+                    null,
+                    out fRead);
+
+                uMessages.Dataspace
+                    fResult = fTest as uMessages.Dataspace;
+
+                //Assert
+                Assert.That(fResult,
+                    Is.Not.Null,
+                    "Incorrect Message Type returned");
+                Assert.That(fResult.Dimensions.Count,
+                    Is.EqualTo(0),
+                    "Incorrect Dimensions");
+                Assert.That(fRead,
+                    Is.EqualTo(fTestSource.Position),
+                    "Incorrect Read Bytes");
+                Assert.That(fResult.DataSpaceType,
+                    Is.EqualTo(aType),
+                    "Incorrect object type");
             }
         }
 
