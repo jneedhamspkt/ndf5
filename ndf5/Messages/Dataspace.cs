@@ -57,15 +57,15 @@ namespace ndf5.Messages
                     : null;
             switch(fHeader.Version)
             {
-                case 0:
+                case 1:
                     fToRetrun = Version1.ReadAfterHeader(
                         fHeader,
                         aReader,
                         fBodySize,
                         out fMessageBodySize);
                     break;
-                case 1:
-                    fToRetrun = Version1.ReadAfterHeader(
+                case 2:
+                    fToRetrun = Version2.ReadAfterHeader(
                         fHeader,
                         aReader,
                         fBodySize,

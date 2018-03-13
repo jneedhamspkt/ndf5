@@ -84,7 +84,141 @@ namespace ndf5.tests.Messages
                 Assert.That(fResult.Dimensions.Select(a => a.MaxSize),
                     Is.All.Null,
                     "Incorret Max Size");
+                Assert.That(fRead,
+                    Is.EqualTo(fTestSource.Position),
+                    "Incorrect Read Bytes");
             }
         }
+
+        [Test, TestOf(typeof(uMessages.Dataspace))]
+        public void Test_Data_Space_V1_Limited_Parsing(
+            [Values(2, 4, 8)] int aOffsetBytes,
+            [Values(2, 4, 8)] int aLengthBytes,
+            [Range(1, 5)] int aDims)
+        {
+            using (Stream fTestSource = new MemoryStream())
+            using (BinaryWriter fWriter = new BinaryWriter(fTestSource))
+            {
+                Action<ulong?> fWriteLength = null;
+                switch (aLengthBytes)
+                {
+                    case 2:
+                        fWriteLength = a => fWriter.Write((ushort)(a ?? ushort.MaxValue));
+                        break;
+                    case 4:
+                        fWriteLength = a => fWriter.Write((uint)(a ?? uint.MaxValue));
+                        break;
+                    case 8:
+                        fWriteLength = a => fWriter.Write((ulong)(a ?? ulong.MaxValue));
+                        break;
+                }
+                fWriter.Write((byte)1);     //Version 2
+                fWriter.Write((byte)aDims); //Dimensionality
+                fWriter.Write((byte)0x1);   //Flags, Has Max
+                fWriter.Write((byte)0x0);   //Reserved
+                fWriter.Write((int)0x0);    //Reserved
+
+                for (int i = 0; i < aDims; ++i)
+                    fWriteLength((ulong)TestDimensions[i].Size);
+                for (int i = 0; i < aDims; ++i)
+                    fWriteLength((ulong?)TestDimensions[i].MaxSize);
+
+                fTestSource.Seek(0, SeekOrigin.Begin);
+
+                Mock<ndf5.Metadata.ISuperBlock>
+                    fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);
+                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)aOffsetBytes);
+                fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
+
+                Hdf5Reader
+                    fReader = new Hdf5Reader(fTestSource, fSuperBlock.Object);
+
+                long fRead;
+                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                    fReader,
+                    uMessages.MessageType.Dataspace,
+                    uMessages.MessageAttributeFlag.None,
+                    null,
+                    out fRead);
+
+                uMessages.Dataspace
+                    fResult = fTest as uMessages.Dataspace;
+
+                Assert.That(fResult,
+                    Is.Not.Null,
+                    "Incorrect Message Type returned");
+                Assert.That(fResult.Dimensions,
+                    Is.EquivalentTo(TestDimensions.Take(aDims)),
+                    "Incorrect Dimensions");
+                Assert.That(fRead,
+                    Is.EqualTo(fTestSource.Position),
+                    "Incorrect Read Bytes");
+            }
+        }
+
+        [Test, TestOf(typeof(uMessages.Dataspace))]
+        public void Test_Data_Space_TooShortError(
+            [Values(2, 4, 8)] int aOffsetBytes,
+            [Values(2, 4, 8)] int aLengthBytes,
+            [Range(2, 5)] int aTooShortLength,
+            [Range(1, 2)] int aVersion)
+        {
+            using (Stream fTestSource = new MemoryStream())
+            using (BinaryWriter fWriter = new BinaryWriter(fTestSource))
+            {
+                int
+                    fDims = TestDimensions.Length;
+                Action<ulong?> fWriteLength = null;
+                switch (aLengthBytes)
+                {
+                    case 2:
+                        fWriteLength = a => fWriter.Write((ushort)(a ?? ushort.MaxValue));
+                        break;
+                    case 4:
+                        fWriteLength = a => fWriter.Write((uint)(a ?? uint.MaxValue));
+                        break;
+                    case 8:
+                        fWriteLength = a => fWriter.Write((ulong)(a ?? ulong.MaxValue));
+                        break;
+                }
+                fWriter.Write((byte)aVersion);      //Version 2
+                fWriter.Write((byte)fDims);         //Dimensionality
+                fWriter.Write((byte)0x1);           //Flags, Has Max
+                fWriter.Write((byte)0x0);           //Reserved
+                fWriter.Write((int)0x0);            //Reserved
+
+                for (int i = 0; i < fDims; ++i)
+                    fWriteLength((ulong)TestDimensions[i].Size);
+                for (int i = 0; i < fDims; ++i)
+                    fWriteLength((ulong?)TestDimensions[i].MaxSize);
+
+                fTestSource.Seek(0, SeekOrigin.Begin);
+
+                Mock<ndf5.Metadata.ISuperBlock>
+                    fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);
+                fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)aOffsetBytes);
+                fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
+
+                Hdf5Reader
+                    fReader = new Hdf5Reader(fTestSource, fSuperBlock.Object);
+
+                long fRead;
+                Assert.That(() =>
+                {
+                    uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                        fReader,
+                        uMessages.MessageType.Dataspace,
+                        uMessages.MessageAttributeFlag.None,
+                        aTooShortLength,
+                        out fRead);
+                },
+                Throws.ArgumentException,
+                "Stream should be too short to read");
+
+
+
+            }
+        }
+
     }
 }

@@ -32,24 +32,34 @@ namespace ndf5.Messages
                 out long aBytes)
             {
                 int
-                    fDimCount = aHeader.Dimensionality;
+                    fDimCount = aHeader.Dimensionality,
+                    fBlockLength = (fDimCount * aReader.mrSuperBlock.SizeOfLengths);
                 long
                     fReadlength = (fDimCount * aReader.mrSuperBlock.SizeOfLengths) + sizeof(UInt32);
+
+                Flags
+                    fHeaderFlags = (Flags)aHeader.Flags;
+
+                if (fHeaderFlags.HasFlag(Flags.HasPermutaions))
+                    throw new NotSupportedException("Permutation index not supported");
+                
+                bool
+                    fHasMax = fHeaderFlags.HasFlag(Flags.HasMax);
+                if (fHasMax)
+                    fReadlength += fBlockLength;
+
                 if (aLocalMessageSize.HasValue && aLocalMessageSize.Value < fReadlength)
                     throw new ArgumentException("Specified Local Message Size not long enough");
 
                 aReader.ReadUInt32(); //Read reserved byte
 
-                Flags
-                    fHeaderFlags = (Flags)aHeader.Flags;
-                if (fHeaderFlags.HasFlag(Flags.HasPermutaions))
-                    throw new NotSupportedException("Permutation index not supported");
+
                 aBytes = fReadlength;
 
 
                 Dimension[] fDimensions = ReadDimensions(
                     aReader, 
-                    fHeaderFlags.HasFlag(Flags.HasMax), 
+                    fHasMax, 
                     fDimCount);
                 
                 return new Version1(DataSpaceType.Simple, fDimensions);
