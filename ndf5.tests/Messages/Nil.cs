@@ -10,21 +10,6 @@ namespace ndf5.tests.Messages
     [TestFixture]
     public class Nil
     {
-        private Mock<IHdfStreamProvider>
-            NilStreamProvider { get; set; }
-
-        [SetUp]
-        public void Setup()
-        {
-            NilStreamProvider = new Mock<IHdfStreamProvider>(MockBehavior.Loose);
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            NilStreamProvider = null;
-        }
-
         [Test]
         public void TestBasicNilRead(
             [Values] uMessages.MessageAttributeFlag aFlags,
@@ -35,16 +20,16 @@ namespace ndf5.tests.Messages
                 fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);    
             fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)aOffsetBytes);
             fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
-            NilStreamProvider
-                .Setup(a => a.GetStream(It.IsAny<StreamRequestArguments>()))
-                .Returns(new Hdf5Reader(new System.IO.MemoryStream(new byte[0]),fSuperBlock.Object));
+
+            Hdf5Reader
+                fReader = new Hdf5Reader(new System.IO.MemoryStream(new byte[0]), fSuperBlock.Object);
 
             uMessages.Message fShortTest = ndf5.Messages.Message.ReadMessage(
-                NilStreamProvider.Object.GetReader(),
+                fReader,
                 uMessages.MessageType.NIL,
                 aFlags);
 
-            Assert.That(fShortTest, Is.InstanceOf(typeof(uMessages.NilMessage)));
+            Assert.That(fShortTest, Is.InstanceOf(typeof(uMessages.Nil)));
         }
 
         [Test]
@@ -58,19 +43,19 @@ namespace ndf5.tests.Messages
                 fSuperBlock = new Mock<ndf5.Metadata.ISuperBlock>(MockBehavior.Loose);
             fSuperBlock.SetupGet(a => a.SizeOfOffsets).Returns((byte)aOffsetBytes);
             fSuperBlock.SetupGet(a => a.SizeOfLengths).Returns((byte)aLengthBytes);
-            NilStreamProvider
-                .Setup(a => a.GetStream(It.IsAny<StreamRequestArguments>()))
-                .Returns(new Hdf5Reader(new System.IO.MemoryStream(new byte[0]), fSuperBlock.Object));
+
+            Hdf5Reader
+                fReader = new Hdf5Reader(new System.IO.MemoryStream(new byte[0]), fSuperBlock.Object);
 
             long fRead;
             uMessages.Message fShortTest = ndf5.Messages.Message.ReadMessage(
-                NilStreamProvider.Object.GetReader(),
+                fReader,
                 uMessages.MessageType.NIL,
                 aFlags,
                 (long)aReadBytes,
                 out fRead);
 
-            Assert.That(fShortTest, Is.InstanceOf(typeof(uMessages.NilMessage)), 
+            Assert.That(fShortTest, Is.InstanceOf(typeof(uMessages.Nil)), 
                 "Incorrect Message type parsed");
             Assert.That(fRead, Is.EqualTo(0), 
                 "Zero bytes should be read");

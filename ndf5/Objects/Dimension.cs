@@ -32,5 +32,28 @@ namespace ndf5.Objects
             Size = aSize;
             MaxSize = aMaxSize;
         }
-    }
+
+		public override bool Equals(object obj)
+		{
+            Dimension
+                fOther = obj as Dimension;
+            if (ReferenceEquals(null, obj))
+                return false;
+            if (ReferenceEquals(this, obj))
+                return true;
+
+            return (this.Size == fOther.Size) &&
+                (this.MaxSize == fOther.MaxSize);
+		}
+
+		public override int GetHashCode()
+		{
+            return (MaxSize.GetHashCode() * 397) ^ Size.GetHashCode();
+		}
+
+		public override string ToString()
+		{
+            return $"{nameof(Dimension)}: Size = {this.Size}, MaxSize = {this.MaxSize}";
+		}
+	}
 }

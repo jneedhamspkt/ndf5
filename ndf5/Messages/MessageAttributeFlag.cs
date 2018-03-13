@@ -11,6 +11,11 @@ namespace ndf5.Messages
     public enum MessageAttributeFlag : byte
     {
         /// <summary>
+        /// MessageAttributeFlag with no bits set
+        /// </summary>
+        None = 0x0,
+
+        /// <summary>
         /// If set, the message data is constant. This is used for messages like
         /// the datatype message of a dataset.
         /// </summary>
