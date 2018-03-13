@@ -27,6 +27,7 @@
     <Folder Include="Infrastructure\SymbolTable\" />
     <Folder Include="ObjectHeaders\" />
     <Folder Include="Messages\" />
+    <Folder Include="Objects\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.IO" Version="4.3.0" />
@@ -35,5 +36,31 @@
     <PackageReference Include="System.Reflection" Version="4.3.0" />
     <PackageReference Include="System.Reflection.TypeExtensions" Version="4.4.0" />
     <PackageReference Include="System.AppDomain" Version="2.0.11" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="Messages\DataspaceMessage.%40Version0.cs">
+      <DependentUpon>DataspaceMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Messages\DataspaceMessage.%40Version0 %28copy%29.cs">
+      <DependentUpon>DataspaceMessage.cs</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\DataspaceMessage.%40DSHeader.cs">
+      <DependentUpon>Dataspace.cs</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\DataspaceMessage.%40Version1.cs">
+      <DependentUpon>Dataspace.cs</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\DataspaceMessage.%40Version2.cs">
+      <DependentUpon>Dataspace.cs</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40DSHeader.cs">
+      <DependentUpon>Dataspace.cs</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40Version1.cs">
+      <DependentUpon>Dataspace.cs</DependentUpon>
+    </Compile>
+    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40Version2.cs">
+      <DependentUpon>Dataspace.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

@@ -21,6 +21,7 @@
     <Folder Include="Streams\" />
     <Folder Include="TestData\Hdf5TestVectors\" />
     <Folder Include="Checksums\" />
+    <Folder Include="Messages\" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="TestData\Hdf5Examples\h5ex_d_alloc.h5" />

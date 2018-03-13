@@ -71,6 +71,10 @@ namespace ndf5.Streams
             }
         }
 
+        public long SizeOfLegths => mrSuperBlock.SizeOfLengths;
+
+        public long SizeOfOffset => mrSuperBlock.SizeOfOffsets;
+
         public long? ReadOffset()
         {
             return ReadFeild(mrSuperBlock.SizeOfOffsets);
