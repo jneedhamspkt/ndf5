@@ -28,6 +28,7 @@ namespace ndf5.tests.Messages
             [Values(2, 4, 8)] int aLengthBytes,
             [Range(1, 5)] int aDims)
         {
+            //Arrange
             using (Stream fTestSource = new MemoryStream())
             using (BinaryWriter fWriter = new BinaryWriter(fTestSource))
             {
@@ -63,6 +64,7 @@ namespace ndf5.tests.Messages
                 Hdf5Reader 
                     fReader = new Hdf5Reader(fTestSource, fSuperBlock.Object);
 
+                //Act
                 long fRead;
                 uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
                     fReader,
@@ -74,6 +76,7 @@ namespace ndf5.tests.Messages
                 uMessages.Dataspace
                     fResult = fTest as uMessages.Dataspace;
 
+                //Assert
                 Assert.That(fResult,
                     Is.Not.Null,
                     "Incorrect Message Type returned");
@@ -94,6 +97,7 @@ namespace ndf5.tests.Messages
             [Values(2, 4, 8)] int aLengthBytes,
             [Range(1, 5)] int aDims)
         {
+            //Arrange
             using (Stream fTestSource = new MemoryStream())
             using (BinaryWriter fWriter = new BinaryWriter(fTestSource))
             {
@@ -131,6 +135,7 @@ namespace ndf5.tests.Messages
                 Hdf5Reader
                     fReader = new Hdf5Reader(fTestSource, fSuperBlock.Object);
 
+                //Act
                 long fRead;
                 uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
                     fReader,
@@ -142,6 +147,7 @@ namespace ndf5.tests.Messages
                 uMessages.Dataspace
                     fResult = fTest as uMessages.Dataspace;
 
+                //Assert
                 Assert.That(fResult,
                     Is.Not.Null,
                     "Incorrect Message Type returned");
@@ -160,6 +166,7 @@ namespace ndf5.tests.Messages
             [Range(2, 5)] int aTooShortLength,
             [Range(1, 2)] int aVersion)
         {
+            //Arrange
             using (Stream fTestSource = new MemoryStream())
             using (BinaryWriter fWriter = new BinaryWriter(fTestSource))
             {
@@ -199,6 +206,7 @@ namespace ndf5.tests.Messages
                 Hdf5Reader
                     fReader = new Hdf5Reader(fTestSource, fSuperBlock.Object);
 
+                //Act/Assert
                 long fRead;
                 Assert.That(() =>
                 {
