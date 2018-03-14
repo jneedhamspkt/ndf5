@@ -25,7 +25,7 @@ namespace ndf5.Messages
         /// for a link in this group. (Null if untracked)
         /// </summary>
         /// <value>The maximum index of the creation.</value>
-        ulong? MaximumCreationIndex { get; }
+        public ulong? MaximumCreationIndex { get; }
 
         /// <summary>
         /// This is the address of the fractal heap to store dense links. Each
@@ -35,7 +35,7 @@ namespace ndf5.Messages
         /// “compactly” (as object header messages), this value will be null
         /// </summary>
         /// <value>The fractal heap address.</value>
-        long? FractalHeapAddress { get; }
+        public long? FractalHeapAddress { get; }
 
         /// <summary>
         /// This is the address of the version 2 B-tree to index names of links.
@@ -44,7 +44,7 @@ namespace ndf5.Messages
         /// “compactly” (as object header messages), this value will be null
         /// </summary>
         /// <value>The name index BT ree address.</value>
-        long? NameIndexBTreeAddress { get; }
+        public long? NameIndexBTreeAddress { get; }
 
         /// <summary>
         /// This is the address of the version 2 B-tree to index creation order
@@ -54,11 +54,19 @@ namespace ndf5.Messages
         /// “compactly” (as object header messages), this value will be null
         /// </summary>
         /// <value>The name index BT ree address.</value>
-        long? CreationOrderIndexBTreeAddress { get; }
+        public long? CreationOrderIndexBTreeAddress { get; }
 
-        public bool CreationOrderTracked { get; }
+        /// <summary>
+        /// True if Creation order is tracked
+        /// </summary>
+        /// <value><c>true</c> if is creation order tracked; otherwise, <c>false</c>.</value>
+        public bool IsCreationOrderTracked { get; }
 
-        public bool CreationOrderIndexed { get; }
+        /// <summary>
+        /// True if Creation order is indexed
+        /// </summary>
+        /// <value><c>true</c> if is creation order indexed; otherwise, <c>false</c>.</value>
+        public bool IsCreationOrderIndexed { get; }
 
         public LinkInfo(
             ulong? aMaximumCreationIndex,
@@ -68,7 +76,7 @@ namespace ndf5.Messages
             long? aCreationOrderIndexBTreeAddress) : base(MessageType.LinkInfo)
         {
             MaximumCreationIndex = aMaximumCreationIndex;
-            CreationOrderTracked = aCreationOrderIndexBTreeAddress.HasValue;
+            IsCreationOrderTracked = aCreationOrderIndexBTreeAddress.HasValue;
             FractalHeapAddress = aFractalHeapAddress;
             NameIndexBTreeAddress = aNameIndexBTreeAddress;
             CreationOrderIndexBTreeAddress = aCreationOrderIndexBTreeAddress;
