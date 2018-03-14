@@ -68,17 +68,26 @@ namespace ndf5.Messages
         /// <value><c>true</c> if is creation order indexed; otherwise, <c>false</c>.</value>
         public bool IsCreationOrderIndexed { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:ndf5.Messages.LinkInfo"/> class.
+        /// </summary>
+        /// <param name="aMaximumCreationIndex">A maximum creation index. (Null if not tracked) </param>
+        /// <param name="aFractalHeapAddress">The fractal heap address.</param>
+        /// <param name="aNameIndexBTreeAddress">The name index B-Tree address.</param>
+        /// <param name="aIsCreationOrderIndexed">If set to <c>true</c> a is creation order indexed.</param>
+        /// <param name="aCreationOrderIndexBTreeAddress">The creation order index B Tree address.</param>
         public LinkInfo(
             ulong? aMaximumCreationIndex,
             long? aFractalHeapAddress,
             long? aNameIndexBTreeAddress,
-            bool aCreationOrderIndexed,
+            bool aIsCreationOrderIndexed,
             long? aCreationOrderIndexBTreeAddress) : base(MessageType.LinkInfo)
         {
             MaximumCreationIndex = aMaximumCreationIndex;
-            IsCreationOrderTracked = aCreationOrderIndexBTreeAddress.HasValue;
+            IsCreationOrderTracked = aMaximumCreationIndex.HasValue;
             FractalHeapAddress = aFractalHeapAddress;
             NameIndexBTreeAddress = aNameIndexBTreeAddress;
+            IsCreationOrderIndexed = aIsCreationOrderIndexed;
             CreationOrderIndexBTreeAddress = aCreationOrderIndexBTreeAddress;
         }
 
