@@ -87,17 +87,17 @@ namespace ndf5.Messages
             Dimension[]
                 fDimensions;
 
-            long[]
+            Length[]
                 fSizes = Enumerable
                     .Range(0, aDimCount)
                     .Select(a =>
                     {
-                        long?
+                        Length
                             fLength = aReader.ReadLength();
-                        if (!fLength.HasValue)
+                        if (fLength.IsNull())
                             throw new System.IO.InvalidDataException(
                                 "Dimension lengths must have real values");
-                        return fLength.Value;
+                        return fLength;
                     })
                     .ToArray();
             if (aHasMax)

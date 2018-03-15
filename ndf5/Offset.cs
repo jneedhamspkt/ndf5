@@ -62,6 +62,7 @@ namespace ndf5
             return new Offset(aLhs.Value - aRhs);
         }
 
-
+        public static implicit operator Offset(ulong aOffset) =>
+            new Offset(aOffset);
     }
 }

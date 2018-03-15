@@ -55,13 +55,13 @@ namespace ndf5.Infrastructure.BTrees.V1
         /// <summary>
         /// The address of the left sibling of the node (Null if none)
         /// </summary>
-        public readonly long?
+        public readonly Offset
             LeftSibling;
 
         /// <summary>
         /// The address of the right sibling of the node (Null if none)
         /// </summary>
-        public readonly long?
+        public readonly Offset
             RightSibling;
 
         /// <summary>
@@ -99,8 +99,8 @@ namespace ndf5.Infrastructure.BTrees.V1
             NodeType aNodeType,
             byte aNodeLevel,
             ushort aEntriesUsed,
-            long? aLeftSibling,
-            long? aRightSibling) : base(
+            Offset aLeftSibling,
+            Offset aRightSibling) : base(
                 BTreeVerson.One, null)
         {
             this.NodeType = aNodeType;

@@ -53,7 +53,7 @@ namespace ndf5.Streams
 
         public override void SetLength(long value)
         {
-            base.SetLength(value + mrSuperBlock.BaseAddress);
+            base.SetLength(value + (long)mrSuperBlock.BaseAddress);
         }
 
 

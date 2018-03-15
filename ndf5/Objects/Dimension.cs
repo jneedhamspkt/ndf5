@@ -12,7 +12,7 @@ namespace ndf5.Objects
         /// dimensions is the slowest changing dimension and the last dimension
         /// stored is the fastest changing dimension.
         /// </summary>
-        public readonly long
+        public readonly Length
             Size;
 
         /// <summary>
@@ -22,13 +22,15 @@ namespace ndf5.Objects
         /// indefinitely. If these values are not stored, the maximum size of 
         /// each dimension is assumed to be the dimension’s current size.
         /// </summary>
-        public readonly long?
+        public readonly Length
             MaxSize;
 
         public Dimension(
-            long aSize,
-            long? aMaxSize = null)
+            Length aSize,
+            Length aMaxSize = null)
         {
+            if (aSize.IsNull())
+                throw new ArgumentNullException(nameof(aSize));
             Size = aSize;
             MaxSize = aMaxSize;
         }

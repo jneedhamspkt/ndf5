@@ -22,9 +22,9 @@ namespace ndf5.tests
                             ndf5.Metadata.ISuperBlock
                                 fSuperBlock = fTest.SuperBlock;
 
-                            string fRootGroupAddr = fSuperBlock.RootGroupAddress.HasValue 
-                                ? $"0x{fSuperBlock.RootGroupAddress:X16}"
-                                : "null";
+                            string fRootGroupAddr = fSuperBlock.RootGroupAddress.IsNull() 
+                               ? "null"
+                               : $"0x{fSuperBlock.RootGroupAddress:X16}";
 
                             Console.WriteLine(
                                 $"{fFile.Replace("ndf5.tests.TestData.", "").PadRight(40)}| " +

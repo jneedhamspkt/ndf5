@@ -25,5 +25,8 @@ namespace ndf5
                 throw new NullReferenceException();
             return new Length(aLhs.Value - aRhs.Value);
         }
+
+        public static implicit operator Length(ulong aLength) =>
+            new Length(aLength);
     }
 }

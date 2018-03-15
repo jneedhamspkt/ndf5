@@ -22,11 +22,11 @@ namespace ndf5.Streams
 
         public override bool CanWrite => false;
 
-        public override long Length => mrSuperBlock.EndOfFileAddress - 1 - mrSuperBlock.BaseAddress;
+        public override long Length => (long)mrSuperBlock.EndOfFileAddress - 1 - (long)mrSuperBlock.BaseAddress;
 
         public override long Position {
-            get => ContainedStream.Position - mrSuperBlock.BaseAddress;
-            set => ContainedStream.Position = mrSuperBlock.BaseAddress + value; }
+            get => ContainedStream.Position - (long)mrSuperBlock.BaseAddress;
+            set => ContainedStream.Position = (long)mrSuperBlock.BaseAddress + value; }
 
 
         public override long Seek(long offset, SeekOrigin origin)
@@ -35,13 +35,13 @@ namespace ndf5.Streams
             {
                 case SeekOrigin.Begin:
                     return ContainedStream.Seek(
-                        offset + mrSuperBlock.BaseAddress,
+                        offset + (long)mrSuperBlock.BaseAddress,
                         SeekOrigin.Begin);
                 case SeekOrigin.Current:
                     return ContainedStream.Seek(offset, SeekOrigin.Current);
                 case SeekOrigin.End:
                     return ContainedStream.Seek(
-                        offset + mrSuperBlock.EndOfFileAddress,
+                        offset + (long)mrSuperBlock.EndOfFileAddress,
                         SeekOrigin.Begin);
                 default: throw new InvalidOperationException();
             }
@@ -75,17 +75,19 @@ namespace ndf5.Streams
 
         public long SizeOfOffset => mrSuperBlock.SizeOfOffsets;
 
-        public long? ReadOffset()
+        public Offset ReadOffset() 
         {
-            return ReadFeild(mrSuperBlock.SizeOfOffsets);
+            return ReadFeild<Offset>(mrSuperBlock.SizeOfOffsets, a => new Offset(a));
         }
 
-        public long? ReadLength()
+        public Length ReadLength()
         {
-            return ReadFeild(mrSuperBlock.SizeOfLengths);
+            return ReadFeild<Length>(mrSuperBlock.SizeOfLengths, a => new Length(a)) ;
         }
 
-        private long? ReadFeild(byte aSize)
+        private tFeild ReadFeild<tFeild>(
+            byte aSize,
+            Func<ulong,tFeild> aConstruct) where tFeild : SuperblockNumber
         {
             byte[]
                 fBuffer = new byte[aSize];
@@ -99,7 +101,7 @@ namespace ndf5.Streams
                             (fBuffer[1] << 8));
                     if (fShort == ushort.MaxValue)
                         return null;
-                    return fShort;
+                    return aConstruct(fShort);
                 case 4:
                     uint fUint = (uint)(
                             (fBuffer[0]) + 
@@ -108,7 +110,7 @@ namespace ndf5.Streams
                             (fBuffer[3] << 24));
                     if (fUint == uint.MaxValue)
                         return null;
-                    return fUint;
+                    return aConstruct(fUint);
                 case 8:
                     ulong fLow = (ulong)(
                             (fBuffer[0]) |
@@ -126,7 +128,7 @@ namespace ndf5.Streams
                         return null;
                     if (fUlong > (ulong)long.MaxValue)
                         throw new Exception("Unsupported Value");
-                        return (long)fUlong;
+                    return aConstruct(fUlong);
                 default:
                     throw new Exception("Unsupported Size");
             }
