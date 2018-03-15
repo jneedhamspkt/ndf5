@@ -141,7 +141,7 @@ namespace ndf5.Metadata
                         throw new InvalidDataException("Reserved bytes expected to be zero");
                 }
                 aContainer.BaseAddress = aContainer.LocationAddress;
-                using(Hdf5Reader fReader = new Hdf5Reader(fStream, aContainer))
+                using(Hdf5Reader fReader = new Hdf5Reader(fStream, aContainer, false))
                 {
                     Offset
                         fBaseAddress = fReader.ReadOffset(),
@@ -206,7 +206,7 @@ namespace ndf5.Metadata
                 fStream.Read(fFieldBytes, 0, fFieldByteCount);
 
                 using (MemoryStream fMemoryStream = new MemoryStream(fFieldBytes))
-                using (Hdf5Reader fReader = new Hdf5Reader(fMemoryStream, aContainer))
+                using (Hdf5Reader fReader = new Hdf5Reader(fMemoryStream, aContainer, false))
                 {
                     Offset
                         fBaseAddress = fReader.ReadOffset(),

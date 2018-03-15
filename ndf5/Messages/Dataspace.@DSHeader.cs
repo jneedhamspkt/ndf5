@@ -48,7 +48,7 @@ namespace ndf5.Messages
                 Type = aType;
             }
 
-            public static DSHeader Read(Stream aStream)
+            public static DSHeader Read(Streams.Hdf5Reader aStream)
             {
                 byte[]
                     fBuffer = new byte[Size];

@@ -12,22 +12,6 @@ namespace ndf5.tests.Streams
     public static class Hdf5Reader
     {
         [Test]
-        public static void TestBasicReader ()
-        {
-            Mock<SuperBlock>
-                fSuperblock = new Mock<SuperBlock>(MockBehavior.Loose);
-            fSuperblock.Setup((a) => a.SizeOfLengths).Returns(8);
-            fSuperblock.Setup((a) => a.SizeOfOffsets).Returns(8);
-
-            using(MemoryStream fStream = new MemoryStream())
-            using (TestStream fTestStream = new TestStream(fStream, fSuperblock.Object))
-            {
-                Assert.That(fTestStream.CanRead, Is.True, "Should be able to read");
-                Assert.That(fTestStream.CanWrite, Is.False, "Should not be able to write");
-            }
-        }
-
-        [Test]
         public static void Test_Short_Reads()
         {
             Mock<SuperBlock>
