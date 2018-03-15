@@ -64,6 +64,13 @@ namespace ndf5.Messages
                         aReader,
                         aLocalMessageSize,
                         out aBytes);
+                    
+                case MessageType.LinkInfo:
+                    return LinkInfo.Read(
+                        aReader,
+                        aLocalMessageSize,
+                        out aBytes);
+
 
                 default:
                     if(aReadFlags.HasFlag(MessageAttributeFlag.MustUnderstandToRead))
@@ -74,7 +81,7 @@ namespace ndf5.Messages
                     break;
             }
 
-            throw new NotImplementedException();
+            throw new NotImplementedException();//TODO: Add 'Not Undestood' message
         }
 
     }
