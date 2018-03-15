@@ -51,7 +51,7 @@ namespace ndf5.Streams
         /// Read an identical number of bytes as are in <c>aSignature</c>
         /// to verify identical data;
         /// </summary>
-        /// <param name="signature">Signature.</param>
+        /// <param name="aSignature">Signature to look for.</param>
         internal void VerifySignature(
             IReadOnlyList<byte> aSignature)
         {
