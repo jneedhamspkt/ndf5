@@ -56,7 +56,8 @@ namespace ndf5.Streams
                 Source.Dispose();
         }
 
-        public virtual long Length => (long)SuperBlock.EndOfFileAddress - 1 - (long)SuperBlock.BaseAddress;
+        public virtual Length Length => 
+            new Length((ulong)(SuperBlock.EndOfFileAddress - new Length(1) - SuperBlock.BaseAddress));
 
         public virtual Offset Position 
         {
@@ -66,24 +67,30 @@ namespace ndf5.Streams
 
         public virtual Offset Seek(Offset aOffset)
         {
+            ulong 
+                fOffsetAddr = (ulong)(SuperBlock.BaseAddress + aOffset);
             return new Offset((ulong)Source.Seek(
-                (long)(SuperBlock.BaseAddress + aOffset),
+                (long) fOffsetAddr,
                 SeekOrigin.Begin));
         }
 
-        public virtual long Seek(long offset, SeekOrigin origin)
+        public virtual long Seek(long aOffset, SeekOrigin origin)
         {
+            ulong
+                fOffsetAddr;
             switch (origin)
             {
                 case SeekOrigin.Begin:
+                    fOffsetAddr = (ulong)(SuperBlock.BaseAddress + new Length((ulong)aOffset));
                     return Source.Seek(
-                        offset + (long)SuperBlock.BaseAddress,
+                        (long)fOffsetAddr,
                         SeekOrigin.Begin);
                 case SeekOrigin.Current:
-                    return Source.Seek(offset, SeekOrigin.Current);
+                    return Source.Seek(aOffset, SeekOrigin.Current);
                 case SeekOrigin.End:
+                    fOffsetAddr = (ulong)(SuperBlock.EndOfFileAddress + new Length((ulong)aOffset));
                     return Source.Seek(
-                        offset + (long)SuperBlock.EndOfFileAddress,
+                        (long)fOffsetAddr,
                         SeekOrigin.Begin);
                 default: throw new InvalidOperationException();
             }

@@ -100,8 +100,9 @@ namespace ndf5.Metadata
         {
             using (Stream fStream = mrStreamProvider.GetReadonlyStream())
             {
+
                 fStream.Seek(
-                    (long)aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length,
+                    (long)(ulong)aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length,
                     SeekOrigin.Begin);
 
                 const byte
@@ -174,7 +175,7 @@ namespace ndf5.Metadata
             {
                
                 fStream.Seek(
-                    (long)(aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length),
+                    (long)(ulong)(aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length),
                     SeekOrigin.Begin);
 
 

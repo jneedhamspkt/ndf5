@@ -125,17 +125,11 @@ namespace ndf5
             return aLhs.Value <= aRhs.Value;
         }
 
-        public static explicit operator ushort?(SuperblockNumber obj) =>
-            (ushort) obj?.Value;
-
-        public static explicit operator uint?(SuperblockNumber obj) =>
-            (uint) obj?.Value;
-
-        public static explicit operator long?(SuperblockNumber obj) => 
-            (long) obj?.Value;
-
         public static implicit operator ulong?(SuperblockNumber obj) => 
             obj?.Value;
+
+        public static explicit operator ulong (SuperblockNumber obj) =>
+            obj.Value;
 
 	}
 }

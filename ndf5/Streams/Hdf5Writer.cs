@@ -38,13 +38,5 @@ namespace ndf5.Streams
             GrowIfNeeded(count);
             Source.Write(buffer, offset, count);
         }
-
-        public void SetLength(long value)
-        {
-            Source.SetLength(value + (long)SuperBlock.BaseAddress);
-        }
-
-
-
     }
 }
