@@ -71,7 +71,7 @@ namespace ndf5.Infrastructure.BTrees.V1
         /// <param name="aLocation">A location in the stream of this Node</param>
         public static Node Parse(
             IHdfStreamProvider aStreamProvider,
-            long aLocation)
+            Offset aLocation)
         {
             using(Hdf5Reader fReader = aStreamProvider.GetReader())
             {
@@ -79,7 +79,7 @@ namespace ndf5.Infrastructure.BTrees.V1
             }
         }
             
-        public Node(Hdf5Reader aReader, long? aLocation) : base(
+        public Node(Hdf5Reader aReader, Offset aLocation) : base(
             BTreeVerson.One,
             aLocation ?? aReader.Position )  
         {

@@ -21,10 +21,10 @@ namespace ndf5.Streams
         private void GrowIfNeeded(
             int aBytes)
         {
-            if (this.Position + aBytes >= this.Length)
-            {
-                SetLength(this.Position + aBytes + 1);
-            }
+            //if (this.Position + aBytes >= this.Length)
+            //{
+            //    SetLength(this.Position + aBytes + 1);
+            //}
         }
 
         public void WriteByte(byte value)

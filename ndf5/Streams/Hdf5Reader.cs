@@ -58,10 +58,18 @@ namespace ndf5.Streams
 
         public virtual long Length => (long)SuperBlock.EndOfFileAddress - 1 - (long)SuperBlock.BaseAddress;
 
-        public virtual long Position {
-            get => Source.Position - (long)SuperBlock.BaseAddress;
-            set => Source.Position = (long)SuperBlock.BaseAddress + value; }
+        public virtual Offset Position 
+        {
+            get => new Offset((ulong)Source.Position) - SuperBlock.BaseAddress;
+            set => Seek(value); 
+        }
 
+        public virtual Offset Seek(Offset aOffset)
+        {
+            return new Offset((ulong)Source.Seek(
+                (long)(SuperBlock.BaseAddress + aOffset),
+                SeekOrigin.Begin));
+        }
 
         public virtual long Seek(long offset, SeekOrigin origin)
         {

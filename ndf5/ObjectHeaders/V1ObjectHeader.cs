@@ -16,13 +16,13 @@ namespace ndf5.ObjectHeaders
             uint
                 fObjectReferenceCount = aReader.ReadUInt32(),
                 fObjectHeaderSize = aReader.ReadUInt32();
-            long 
-                fTerminate = aReader.Position + fObjectHeaderSize;
+            //long 
+            //    fTerminate = aReader.Position + fObjectHeaderSize;
 
-            while(aReader.Position <= fTerminate)
-            {
+            //while(aReader.Position <= fTerminate)
+            //{
                 
-            }
+            //}
 
             throw new NotImplementedException();
         }
