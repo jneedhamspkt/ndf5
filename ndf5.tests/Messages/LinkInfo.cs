@@ -201,11 +201,11 @@ namespace ndf5.tests.Messages
                     Is.Null,
                     "Incorrect value for MaximumCreationIndex parsed");
                 Assert.That(
-                    fResult.FractalHeapAddress,
+                    (ulong)fResult.FractalHeapAddress,
                     Is.EqualTo(aHeapAddr),
                     "Incorrect value for FractalHeapAddress parsed");
                 Assert.That(
-                    fResult.NameIndexBTreeAddress,
+                    (ulong)fResult.NameIndexBTreeAddress,
                     Is.EqualTo(aTreeAddr),
                     "Incorrect value for NameIndexBTreeAddress parsed");
                 Assert.That(
@@ -410,15 +410,15 @@ namespace ndf5.tests.Messages
                     Is.EqualTo(aMaxCreation),
                     "Incorrect value for MaximumCreationIndex parsed");
                 Assert.That(
-                    fResult.FractalHeapAddress,
+                    (ulong)fResult.FractalHeapAddress,
                     Is.EqualTo(aHeapAddr),
                     "Incorrect value for FractalHeapAddress parsed");
                 Assert.That(
-                    fResult.NameIndexBTreeAddress,
+                    (ulong)fResult.NameIndexBTreeAddress,
                     Is.EqualTo(aTreeAddr),
                     "Incorrect value for NameIndexBTreeAddress parsed");
                 Assert.That(
-                    fResult.CreationOrderIndexBTreeAddress,
+                    (ulong)fResult.CreationOrderIndexBTreeAddress,
                     Is.EqualTo(aCreateTreeAddr),
                     "Incorrect value for CreationOrderIndexBTreeAddress parsed");
             }

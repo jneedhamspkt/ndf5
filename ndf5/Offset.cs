@@ -14,7 +14,7 @@ namespace ndf5
         {
             if (ReferenceEquals(aLhs, null) || ReferenceEquals(aRhs, null))
                 throw new NullReferenceException();
-            return new Offset(aLhs.Value + aRhs);
+            return new Offset(aLhs.Value + aRhs.Value);
         }
 
         public static Offset operator -(
@@ -23,7 +23,7 @@ namespace ndf5
         {
             if (ReferenceEquals(aLhs, null) || ReferenceEquals(aRhs, null))
                 throw new NullReferenceException();
-            return new Offset(aLhs.Value - aRhs);
+            return new Offset(aLhs.Value - aRhs.Value);
         }
 
         public static Offset operator +(
