@@ -45,8 +45,8 @@ namespace ndf5.tests
             Assert.That(new Length(0), Is.LessThanOrEqualTo(new Length(2)), "Broken inequality check");
             Assert.That(new Length(2), Is.Not.LessThanOrEqualTo(new Length(0)), "Broken inequality check");
 
-            Assert.That((Length)2 + (Length)2, Is.EqualTo(new Length(4)), "Addtion broken");
-            Assert.That((Length)2 - (Length)2, Is.EqualTo(new Length(0)), "Subtraction broken");
+            Assert.That((Length)2 + new Length(2), Is.EqualTo(new Length(4)), "Addtion broken");
+            Assert.That((Length)2 - new Length(2), Is.EqualTo(new Length(0)), "Subtraction broken");
         }
 
         [Test, TestOf(typeof(Offset))]
