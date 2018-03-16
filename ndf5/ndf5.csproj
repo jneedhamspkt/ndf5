@@ -63,4 +63,9 @@
       <DependentUpon>Dataspace.cs</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <None Update="ObjectHeaders\.DS_Store">
+      <DependentUpon>.</DependentUpon>
+    </None>
+  </ItemGroup>
 </Project>
