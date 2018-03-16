@@ -30,7 +30,7 @@ namespace ndf5.Messages
                 int
                     fDimCount = aHeader.Dimensionality;
                 long
-                    fReadlength = (fDimCount * aReader.mrSuperBlock.SizeOfLengths);
+                    fReadlength = (fDimCount * aReader.SuperBlock.SizeOfLengths);
                 Flags
                     fHeaderFlags = (Flags)aHeader.Flags;
                 bool

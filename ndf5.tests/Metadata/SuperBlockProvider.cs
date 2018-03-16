@@ -34,7 +34,7 @@ namespace ndf5.tests.Metadata
                 using(BinaryWriter fwriter = new BinaryWriter(fBuffer))
                 {
                     ndf5.Metadata.FormatSignatureAndVersionInfo
-                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, 0);
+                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, (Offset)0);
                     byte[]
                         fFormatBlock = fSig.AsBytes;
                     fwriter.Write(fFormatBlock);
@@ -111,24 +111,24 @@ namespace ndf5.tests.Metadata
                     switch(aOffset)
                     {
                         case 2:
-                            Assert.That(fSuperBlock.BaseAddress, Is.EqualTo(0x1234), "Incorrect Base Address");
-                            Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x5678), "Incorrect Address of File Free space Info");
-                            Assert.That(fSuperBlock.EndOfFileAddress, Is.EqualTo(0x9ABC), "Incorrect End of File Address");
-                            Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0xDEF0), "Incorrect Driver Information Block Address");
+                            Assert.That((ushort)fSuperBlock.BaseAddress, Is.EqualTo(0x1234), "Incorrect Base Address");
+                            Assert.That((ushort)fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x5678), "Incorrect Address of File Free space Info");
+                            Assert.That((ushort)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x9ABC), "Incorrect End of File Address");
+                            Assert.That((ushort)fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0xDEF0), "Incorrect Driver Information Block Address");
                             break;
 
                         case 4:
-                            Assert.That(fSuperBlock.BaseAddress, Is.EqualTo(0x10203040), "Incorrect Base Address");
-                            Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x05060708), "Incorrect Address of File Free space Info");
-                            Assert.That(fSuperBlock.EndOfFileAddress, Is.EqualTo(0x90A0B0C0), "Incorrect End of File Address");
-                            Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x0D0E0F00), "Incorrect Driver Information Block Address");
+                            Assert.That((uint)fSuperBlock.BaseAddress, Is.EqualTo(0x10203040), "Incorrect Base Address");
+                            Assert.That((uint)fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x05060708), "Incorrect Address of File Free space Info");
+                            Assert.That((uint)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x90A0B0C0), "Incorrect End of File Address");
+                            Assert.That((uint)fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x0D0E0F00), "Incorrect Driver Information Block Address");
                             break;
 
                         case 8:
-                            Assert.That(fSuperBlock.BaseAddress, Is.EqualTo(0x10203040AAAAAAAA), "Incorrect Base Address");
-                            Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x4BBBBBBB05060708), "Incorrect Address of File Free space Info");
-                            Assert.That(fSuperBlock.EndOfFileAddress, Is.EqualTo(0x50A0B0C0CCCCCCCC), "Incorrect End of File Address");
-                            Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Driver Information Block Address");
+                            Assert.That((ulong)fSuperBlock.BaseAddress, Is.EqualTo(0x10203040AAAAAAAA), "Incorrect Base Address");
+                            Assert.That((ulong)fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x4BBBBBBB05060708), "Incorrect Address of File Free space Info");
+                            Assert.That((ulong)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x50A0B0C0CCCCCCCC), "Incorrect End of File Address");
+                            Assert.That((ulong)fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Driver Information Block Address");
                             break;
                     }
                 }
@@ -157,7 +157,7 @@ namespace ndf5.tests.Metadata
                 using (BinaryWriter fwriter = new BinaryWriter(fBuffer))
                 {
                     ndf5.Metadata.FormatSignatureAndVersionInfo
-                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, 0);
+                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, (Offset)0);
                     byte[]
                         fFormatBlock = fSig.AsBytes;
                     fwriter.Write(fFormatBlock);
@@ -223,25 +223,25 @@ namespace ndf5.tests.Metadata
                     switch (aOffset)
                     {
                         case 2:
-                            Assert.That(fSuperBlock.BaseAddress, Is.EqualTo(0x1234), "Incorrect Base Address");
+                            Assert.That((ushort)fSuperBlock.BaseAddress, Is.EqualTo(0x1234), "Incorrect Base Address");
                             //Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x5678), "Incorrect Address of File Free space Info");
-                            Assert.That(fSuperBlock.EndOfFileAddress, Is.EqualTo(0x9ABC), "Incorrect End of File Address");
+                            Assert.That((ushort)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x9ABC), "Incorrect End of File Address");
                             //Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0xDEF0), "Incorrect Driver Information Block Address");
                             break;
 
                         case 4:
-                            Assert.That(fSuperBlock.BaseAddress, Is.EqualTo(0x10203040), "Incorrect Base Address");
+                            Assert.That((uint)fSuperBlock.BaseAddress, Is.EqualTo(0x10203040), "Incorrect Base Address");
                             //Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x05060708), "Incorrect Address of File Free space Info");
-                            Assert.That(fSuperBlock.EndOfFileAddress, Is.EqualTo(0x90A0B0C0), "Incorrect End of File Address");
+                            Assert.That((uint)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x90A0B0C0), "Incorrect End of File Address");
                             //Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x0D0E0F00), "Incorrect Driver Information Block Address");
                             break;
 
                         case 8:
-                            Assert.That(fSuperBlock.BaseAddress, Is.EqualTo(0x10203040AAAAAAAA), "Incorrect Base Address");
+                            Assert.That((ulong)fSuperBlock.BaseAddress, Is.EqualTo(0x10203040AAAAAAAA), "Incorrect Base Address");
                             // TODO: Test Superblock extension
                             //Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x4BBBBBBB05060708), "Incorrect Address of File Free space Info");
-                            Assert.That(fSuperBlock.EndOfFileAddress, Is.EqualTo(0x50A0B0C0CCCCCCCC), "Incorrect End of File Address");
-                            Assert.That(fSuperBlock.RootGroupAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Super block address");
+                            Assert.That((ulong)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x50A0B0C0CCCCCCCC), "Incorrect End of File Address");
+                            Assert.That((ulong)fSuperBlock.RootGroupAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Super block address");
                             break;
                     }
                 }

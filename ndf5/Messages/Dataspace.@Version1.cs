@@ -33,9 +33,9 @@ namespace ndf5.Messages
             {
                 int
                     fDimCount = aHeader.Dimensionality,
-                    fBlockLength = (fDimCount * aReader.mrSuperBlock.SizeOfLengths);
+                    fBlockLength = (fDimCount * aReader.SuperBlock.SizeOfLengths);
                 long
-                    fReadlength = (fDimCount * aReader.mrSuperBlock.SizeOfLengths) + sizeof(UInt32);
+                    fReadlength = (fDimCount * aReader.SuperBlock.SizeOfLengths) + sizeof(UInt32);
 
                 Flags
                     fHeaderFlags = (Flags)aHeader.Flags;

@@ -11,7 +11,7 @@ namespace ndf5.Infrastructure.SymbolTable
         /// of the link. The name is null terminated.
         /// </summary>
         /// <value>The link name offset.</value>
-        public long? LinkNameOffset { get; }
+        public Offset LinkNameOffset { get; }
 
         /// <summary>
         /// Every object has an object header which serves as a permanent
@@ -20,7 +20,7 @@ namespace ndf5.Infrastructure.SymbolTable
         /// in the scratch-pad space.
         /// </summary>
         /// <value>The object header address.</value>
-        public long? ObjectHeaderAddress { get; }
+        public Offset ObjectHeaderAddress { get; }
 
         /// <summary>
         /// Gets the type of the cache.
@@ -32,13 +32,13 @@ namespace ndf5.Infrastructure.SymbolTable
         /// This is the file address for the root of the group’s B-tree.
         /// </summary>
         /// <value>The BT ree address.</value>
-        public long? BTreeAddress { get; }
+        public Offset BTreeAddress { get; }
 
         /// <summary>
         /// Gets the local name heap address.
         /// </summary>
         /// <value>The name heap address.</value>
-        public long? NameHeapAddress{ get; }
+        public Offset NameHeapAddress{ get; }
 
         /// <summary>
         /// The value of a symbolic link (that is, the name of the thing to 
@@ -59,11 +59,11 @@ namespace ndf5.Infrastructure.SymbolTable
         /// <param name="aNameHeapAddress">Name heap address.</param>
         /// <param name="aSymbolicLinkOffset">Symbolic link offset.</param>
         private SymbolTableEntry(
-            long? aLinkNameOffset,
-            long? aObjectHeaderAddress,
+            Offset aLinkNameOffset,
+            Offset aObjectHeaderAddress,
             CacheType aCacheType,
-            long? aBTreeAddress = null,
-            long? aNameHeapAddress = null,
+            Offset aBTreeAddress = null,
+            Offset aNameHeapAddress = null,
             uint? aSymbolicLinkOffset = null)
         {
             LinkNameOffset = aLinkNameOffset;
@@ -81,8 +81,8 @@ namespace ndf5.Infrastructure.SymbolTable
         /// <param name="aLinkNameOffset">A link name offset.</param>
         /// <param name="aObjectHeaderAddress">A object header address.</param>
         public SymbolTableEntry (
-            long? aLinkNameOffset,
-            long? aObjectHeaderAddress) : this(
+            Offset aLinkNameOffset,
+            Offset aObjectHeaderAddress) : this(
                 aLinkNameOffset,
                 aObjectHeaderAddress,
                 CacheType.NoCache) {}
@@ -94,10 +94,10 @@ namespace ndf5.Infrastructure.SymbolTable
         /// <param name="aBTreeAddress">A BT ree address.</param>
         /// <param name="aNameHeapAddress">A name heap address.</param>
         public SymbolTableEntry (
-            long? aLinkNameOffset,
-            long? aObjectHeaderAddress,
-            long? aBTreeAddress = null,
-            long? aNameHeapAddress = null) : this(
+            Offset aLinkNameOffset,
+            Offset aObjectHeaderAddress,
+            Offset aBTreeAddress = null,
+            Offset aNameHeapAddress = null) : this(
                 aLinkNameOffset,
                 aObjectHeaderAddress,
                 CacheType.Cache,
@@ -111,8 +111,8 @@ namespace ndf5.Infrastructure.SymbolTable
         /// <param name="aObjectHeaderAddress">A object header address.</param>
         /// <param name="aSymbolicLinkOffset">A symbolic link offset.</param>
         public SymbolTableEntry(
-            long? aLinkNameOffset,
-            long? aObjectHeaderAddress,
+            Offset aLinkNameOffset,
+            Offset aObjectHeaderAddress,
             uint? aSymbolicLinkOffset = null) : this(
                 aLinkNameOffset,
                 aObjectHeaderAddress,
@@ -145,8 +145,8 @@ namespace ndf5.Infrastructure.SymbolTable
         public static SymbolTableEntry Read(
             Hdf5Reader aReader)
         {
-            long? fLinkNameOffset = aReader.ReadOffset();
-            long? fObjectHeaderAddress = aReader.ReadOffset();
+            Offset fLinkNameOffset = aReader.ReadOffset();
+            Offset fObjectHeaderAddress = aReader.ReadOffset();
             CacheType fCacheType = (CacheType)aReader.ReadUInt32();
             aReader.ReadUInt32(); // Reserved Word
             switch (fCacheType)

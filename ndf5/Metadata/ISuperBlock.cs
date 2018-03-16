@@ -10,7 +10,7 @@ namespace ndf5.Metadata
         /// (found, not parsed)
         /// </summary>
         /// <value>The location address.</value>
-        long LocationAddress { get; }
+        Offset LocationAddress { get; }
 
         /// <summary>
         /// Gets the super block version.
@@ -91,25 +91,25 @@ namespace ndf5.Metadata
         /// Source: <see cref="https://support.hdfgroup.org/HDF5/doc/H5.format.html#Superblock"/>
         /// </remarks>
         /// <value>The base address.</value>
-        long BaseAddress { get; }
+        Offset BaseAddress { get; }
 
         /// <summary>
         /// Gets the file freespace info address.
         /// </summary>
         /// <value>The file freespace info address.</value>
-        long? FileFreespaceInfoAddress { get; }
+        Offset FileFreespaceInfoAddress { get; }
 
         /// <summary>
         /// Gets the end of file address.
         /// </summary>
         /// <value>The end of file address.</value>
-        long EndOfFileAddress { get; }
+        Offset EndOfFileAddress { get; }
 
         /// <summary>
         /// Gets the driver information block address.
         /// </summary>
         /// <value>The driver information block address.</value>
-        long? DriverInformationBlockAddress { get; }
+        Offset DriverInformationBlockAddress { get; }
 
 
         //TODO: Add Superblock Extension
@@ -118,7 +118,7 @@ namespace ndf5.Metadata
         /// Gets the root group address, if Null, use the RootGroupSymbolTableEntry
         /// </summary>
         /// <value>The root group address.</value>
-        long? RootGroupAddress { get; }
+        Offset RootGroupAddress { get; }
 
         /// <summary>
         /// Gets the root group symbol table entry. (May be null)

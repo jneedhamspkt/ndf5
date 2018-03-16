@@ -178,7 +178,7 @@ namespace ndf5.tests.Messages
             {
                 int
                     fDims = TestDimensions.Length;
-                Action<ulong?> fWriteLength = null;
+                Action<Length> fWriteLength = null;
                 switch (aLengthBytes)
                 {
                     case 2:
@@ -308,7 +308,7 @@ namespace ndf5.tests.Messages
             using (Stream fTestSource = new MemoryStream())
             using (BinaryWriter fWriter = new BinaryWriter(fTestSource))
             {
-                Action<ulong?> fWriteLength = null;
+                Action<Length> fWriteLength = null;
                 switch (aLengthBytes)
                 {
                     case 2:

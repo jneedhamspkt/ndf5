@@ -25,7 +25,7 @@ namespace ndf5.Metadata
         private class SuperBlockObj : ISuperBlock
         {
             public SuperBlockObj(
-                long aLocationAddress, 
+                Offset aLocationAddress, 
                 byte aVersion)
             {
                 LocationAddress = aLocationAddress;
@@ -33,7 +33,7 @@ namespace ndf5.Metadata
                 SuperBlockVersion = aVersion;
             }
 
-            public long LocationAddress { get; private set; }
+            public Offset LocationAddress { get; private set; }
 
             public byte SuperBlockVersion { get; private set; }
 
@@ -55,15 +55,15 @@ namespace ndf5.Metadata
 
             public ushort IndexedStorageInternalNodeK { get; set; }
 
-            public long BaseAddress { get; set; }
+            public Offset BaseAddress { get; set; }
 
-            public long? FileFreespaceInfoAddress { get; set; }
+            public Offset FileFreespaceInfoAddress { get; set; }
 
-            public long EndOfFileAddress { get; set; }
+            public Offset EndOfFileAddress { get; set; }
 
-            public long? DriverInformationBlockAddress { get; set; }
+            public Offset DriverInformationBlockAddress { get; set; }
 
-            public long? RootGroupAddress { get; set; } = null;
+            public Offset RootGroupAddress { get; set; } = null;
 
             public SymbolTableEntry RootGroupSymbolTableEntry { get; set; } = null;
         }
@@ -100,8 +100,9 @@ namespace ndf5.Metadata
         {
             using (Stream fStream = mrStreamProvider.GetReadonlyStream())
             {
+
                 fStream.Seek(
-                    aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length,
+                    (long)(ulong)aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length,
                     SeekOrigin.Begin);
 
                 const byte
@@ -141,9 +142,9 @@ namespace ndf5.Metadata
                         throw new InvalidDataException("Reserved bytes expected to be zero");
                 }
                 aContainer.BaseAddress = aContainer.LocationAddress;
-                using(Hdf5Reader fReader = new Hdf5Reader(fStream, aContainer))
+                using(Hdf5Reader fReader = new Hdf5Reader(fStream, aContainer, false))
                 {
-                    long?
+                    Offset
                         fBaseAddress = fReader.ReadOffset(),
                         fFreeSpaceAddress = fReader.ReadOffset(),
                         fEndOfFileAddress = fReader.ReadOffset(),
@@ -152,13 +153,13 @@ namespace ndf5.Metadata
                         fRootGroupEntry = SymbolTableEntry.Read(fReader);
 
 
-                    if (!fBaseAddress.HasValue)
+                    if (fBaseAddress.IsNull())
                         throw new InvalidDataException("No base adddress Specified");
-                    aContainer.BaseAddress = fBaseAddress.Value;
+                    aContainer.BaseAddress = fBaseAddress;
                     aContainer.FileFreespaceInfoAddress = fFreeSpaceAddress;
-                    if (!fEndOfFileAddress.HasValue)
+                    if (fEndOfFileAddress.IsNull())
                         throw new InvalidDataException("No End Of file Adddress Specified");
-                    aContainer.EndOfFileAddress = fEndOfFileAddress.Value;
+                    aContainer.EndOfFileAddress = fEndOfFileAddress;
                     aContainer.DriverInformationBlockAddress = fDirverInformationBlockAddress;
                     aContainer.RootGroupSymbolTableEntry = fRootGroupEntry;
                     aContainer.RootGroupAddress = fRootGroupEntry.ObjectHeaderAddress;
@@ -174,7 +175,7 @@ namespace ndf5.Metadata
             {
                
                 fStream.Seek(
-                    aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length,
+                    (long)(ulong)(aContainer.LocationAddress + FormatSignatureAndVersionInfo.Length),
                     SeekOrigin.Begin);
 
 
@@ -206,25 +207,25 @@ namespace ndf5.Metadata
                 fStream.Read(fFieldBytes, 0, fFieldByteCount);
 
                 using (MemoryStream fMemoryStream = new MemoryStream(fFieldBytes))
-                using (Hdf5Reader fReader = new Hdf5Reader(fMemoryStream, aContainer))
+                using (Hdf5Reader fReader = new Hdf5Reader(fMemoryStream, aContainer, false))
                 {
-                    long?
+                    Offset
                         fBaseAddress = fReader.ReadOffset(),
                     fSuperBlockExtensionAddress = fReader.ReadOffset(),
                     fEndOfFileAddress = fReader.ReadOffset(),
                     fRootGroupAddress = fReader.ReadOffset();
                 
-                    if (!fBaseAddress.HasValue)
+                    if (fBaseAddress.IsNull())
                         throw new InvalidDataException("No base adddress Specified");
-                    aContainer.BaseAddress = fBaseAddress.Value;
+                    aContainer.BaseAddress = fBaseAddress;
 
                     //TODO: Handle SuperVlock Extensions
 
-                    if (!fEndOfFileAddress.HasValue)
+                    if (fEndOfFileAddress.IsNull())
                         throw new InvalidDataException("No End Of file Adddress Specified");
-                    aContainer.EndOfFileAddress = fEndOfFileAddress.Value;
+                    aContainer.EndOfFileAddress = fEndOfFileAddress;
 
-                    if (!fRootGroupAddress.HasValue)
+                    if (fRootGroupAddress.IsNull())
                         throw new InvalidDataException("No Root Group Specified");
                     aContainer.RootGroupAddress = fRootGroupAddress;
 

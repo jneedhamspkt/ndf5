@@ -237,4 +237,9 @@
     <EmbeddedResource Include="TestData\Hdf5TestVectors\tmtimeo.h5" />
     <EmbeddedResource Include="TestData\Hdf5TestVectors\tsizeslheap.h5" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\ndf5\ObjectExtensions.cs">
+      <Link>ObjectExtensions.cs</Link>
+    </Compile>
+  </ItemGroup>
 </Project>

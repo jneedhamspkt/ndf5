@@ -7,51 +7,112 @@ using ndf5.Metadata;
 
 namespace ndf5.Streams
 {
-    public class Hdf5Reader : StreamContainer
+    public class Hdf5Reader : IDisposable
     {
         internal protected readonly ISuperBlock
-            mrSuperBlock;
+            SuperBlock;
+
+        internal protected readonly Stream
+            Source;
 
 
+        private readonly bool
+            mrManageStreamLifetime;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:ndf5.Streams.Hdf5Reader"/> class.
+        /// </summary>
+        /// <param name="aBaseStream">Stream to read from</param>
+        /// <param name="aSuperBlock">A super block.</param>
+        /// <param name="aManageStreamLifetime">If set to <c>true</c> Disposing this will dispos <c>aBaseStream</c>.</param>
         public Hdf5Reader(
-            Stream aBaseStream, 
-            ISuperBlock aSuperBlock) : base(aBaseStream)
+            Stream aBaseStream,
+            ISuperBlock aSuperBlock,
+            bool aManageStreamLifetime = true)
         {
-            mrSuperBlock = aSuperBlock;
+            if (!aBaseStream.CanRead)
+                throw new ArgumentException("Cannot read the stream");
+            Source = aBaseStream;
+            SuperBlock = aSuperBlock;
+            mrManageStreamLifetime = aManageStreamLifetime;
         }
 
-        public override bool CanWrite => false;
-
-        public override long Length => mrSuperBlock.EndOfFileAddress - 1 - mrSuperBlock.BaseAddress;
-
-        public override long Position {
-            get => ContainedStream.Position - mrSuperBlock.BaseAddress;
-            set => ContainedStream.Position = mrSuperBlock.BaseAddress + value; }
-
-
-        public override long Seek(long offset, SeekOrigin origin)
+        ~Hdf5Reader()
         {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+            Dispose(true);
+        }
+
+        internal protected void Dispose(bool aIsDisposing)
+        {
+            if (!aIsDisposing)
+                return;
+            if(mrManageStreamLifetime)
+                Source.Dispose();
+        }
+
+        public virtual Length Length => 
+            new Length((ulong)(SuperBlock.EndOfFileAddress - new Length(1) - SuperBlock.BaseAddress));
+
+        public virtual Offset Position 
+        {
+            get => new Offset((ulong)Source.Position) - SuperBlock.BaseAddress;
+            set => Seek(value); 
+        }
+
+        public virtual Offset Seek(Offset aOffset)
+        {
+            ulong 
+                fOffsetAddr = (ulong)(SuperBlock.BaseAddress + aOffset);
+            return new Offset((ulong)Source.Seek(
+                (long) fOffsetAddr,
+                SeekOrigin.Begin));
+        }
+
+        public virtual long Seek(long aOffset, SeekOrigin origin)
+        {
+            ulong
+                fOffsetAddr;
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    return ContainedStream.Seek(
-                        offset + mrSuperBlock.BaseAddress,
+                    fOffsetAddr = (ulong)(SuperBlock.BaseAddress + new Length((ulong)aOffset));
+                    return Source.Seek(
+                        (long)fOffsetAddr,
                         SeekOrigin.Begin);
                 case SeekOrigin.Current:
-                    return ContainedStream.Seek(offset, SeekOrigin.Current);
+                    return Source.Seek(aOffset, SeekOrigin.Current);
                 case SeekOrigin.End:
-                    return ContainedStream.Seek(
-                        offset + mrSuperBlock.EndOfFileAddress,
+                    fOffsetAddr = (ulong)(SuperBlock.EndOfFileAddress + new Length((ulong)aOffset));
+                    return Source.Seek(
+                        (long)fOffsetAddr,
                         SeekOrigin.Begin);
                 default: throw new InvalidOperationException();
             }
         }
 
         /// <summary>
+        /// Read the stream and write it to thee specified buffer, offset and count.
+        /// </summary>
+        /// <returns>The read.</returns>
+        /// <param name="buffer">Buffer.</param>
+        /// <param name="offset">Offset.</param>
+        /// <param name="count">Count.</param>
+        internal int Read(byte[] buffer, int offset, int count)
+        {   
+            return Source.Read(buffer, offset, count);
+        }
+
+        /// <summary>
         /// Read an identical number of bytes as are in <c>aSignature</c>
         /// to verify identical data;
         /// </summary>
-        /// <param name="signature">Signature.</param>
+        /// <param name="aSignature">Signature to look for.</param>
         internal void VerifySignature(
             IReadOnlyList<byte> aSignature)
         {
@@ -59,7 +120,7 @@ namespace ndf5.Streams
                 fBytes = aSignature.Count;
             byte[]
                 fSource = new byte[fBytes];
-            if (fBytes != Read(fSource, 0, fBytes))
+            if (fBytes != Source.Read(fSource, 0, fBytes))
                 throw new EndOfStreamException();
             for (int i = 0; i < fBytes; ++i)
             {
@@ -71,25 +132,27 @@ namespace ndf5.Streams
             }
         }
 
-        public long SizeOfLegths => mrSuperBlock.SizeOfLengths;
+        public long SizeOfLegths => SuperBlock.SizeOfLengths;
 
-        public long SizeOfOffset => mrSuperBlock.SizeOfOffsets;
+        public long SizeOfOffset => SuperBlock.SizeOfOffsets;
 
-        public long? ReadOffset()
+        public Offset ReadOffset() 
         {
-            return ReadFeild(mrSuperBlock.SizeOfOffsets);
+            return ReadFeild<Offset>(SuperBlock.SizeOfOffsets, a => new Offset(a));
         }
 
-        public long? ReadLength()
+        public Length ReadLength()
         {
-            return ReadFeild(mrSuperBlock.SizeOfLengths);
+            return ReadFeild<Length>(SuperBlock.SizeOfLengths, a => new Length(a)) ;
         }
 
-        private long? ReadFeild(byte aSize)
+        private tFeild ReadFeild<tFeild>(
+            byte aSize,
+            Func<ulong,tFeild> aConstruct) where tFeild : UnsignedNumber
         {
             byte[]
                 fBuffer = new byte[aSize];
-            Read(fBuffer, 0, aSize);
+            Source.Read(fBuffer, 0, aSize);
             switch (aSize)
             {
                 case 2:
@@ -99,7 +162,7 @@ namespace ndf5.Streams
                             (fBuffer[1] << 8));
                     if (fShort == ushort.MaxValue)
                         return null;
-                    return fShort;
+                    return aConstruct(fShort);
                 case 4:
                     uint fUint = (uint)(
                             (fBuffer[0]) + 
@@ -108,7 +171,7 @@ namespace ndf5.Streams
                             (fBuffer[3] << 24));
                     if (fUint == uint.MaxValue)
                         return null;
-                    return fUint;
+                    return aConstruct(fUint);
                 case 8:
                     ulong fLow = (ulong)(
                             (fBuffer[0]) |
@@ -126,10 +189,15 @@ namespace ndf5.Streams
                         return null;
                     if (fUlong > (ulong)long.MaxValue)
                         throw new Exception("Unsupported Value");
-                        return (long)fUlong;
+                    return aConstruct(fUlong);
                 default:
                     throw new Exception("Unsupported Size");
             }
+        }
+
+        internal byte ReadByte()
+        {
+            return (byte) Source.ReadByte();
         }
 
         /// <summary>
@@ -140,7 +208,7 @@ namespace ndf5.Streams
         {
             byte[]
                 fBuffer = new byte[2];
-            Read(fBuffer, 0, 2);
+            Source.Read(fBuffer, 0, 2);
             ushort
                 fShort = (ushort)(
                     (fBuffer[0]) +
@@ -156,7 +224,7 @@ namespace ndf5.Streams
         {
             byte[]
                 fBuffer = new byte[4];
-            Read(fBuffer, 0, 4);
+            Source.Read(fBuffer, 0, 4);
             uint fUint = (uint)(
                 (fBuffer[0]) +
                 (fBuffer[1] << 8) +
@@ -173,7 +241,7 @@ namespace ndf5.Streams
         {
             byte[]
                 fBuffer = new byte[8];
-            Read(fBuffer, 0, 8);
+            Source.Read(fBuffer, 0, 8);
             ulong fLow = (ulong)(
                             (fBuffer[0]) |
                             (fBuffer[1] << 8) |
@@ -189,31 +257,6 @@ namespace ndf5.Streams
             return fUlong;
         }
 
-
-        public override void SetLength(long value)
-        {
-            throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
-        }
-
-        public override void Write(byte[] buffer, int offset, int count)
-        {
-            throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
-        }
-
-        public override void WriteByte(byte value)
-        {
-            throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
-        }
-
-        public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
-        {
-            throw new NotSupportedException($"{nameof(Hdf5Reader)} is read only)");
-        }
-
-        protected override void OnDone(bool aDisposed)
-        {
-            //Nothing to do
-        }
 
 
     }

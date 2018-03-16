@@ -15,11 +15,11 @@ namespace ndf5.Infrastructure.BTrees
         /// Address of the first byte of this Node
         /// </summary>
         /// <value>The location.</value>
-        public long? Location { get; }
+        public Offset Location { get; }
 
         public BTreeNode(
             BTreeVerson aVersion,
-            long? aLocation)
+            Offset aLocation)
         {
             Version = aVersion;
             Location = aLocation;

@@ -14,49 +14,29 @@ namespace ndf5.Streams
             Stream aBaseStream,
             ISuperBlock aSuperBlock) : base(aBaseStream, aSuperBlock)
         {
-            if (!ContainedStream.CanWrite)
+            if (!Source.CanWrite)
                 throw new ArgumentException("Cannot Write to stream");
         }
-
-        public override bool CanWrite => true;
 
         private void GrowIfNeeded(
             int aBytes)
         {
-            if (this.Position + aBytes >= this.Length)
-            {
-                SetLength(this.Position + aBytes + 1);
-            }
+            //if (this.Position + aBytes >= this.Length)
+            //{
+            //    SetLength(this.Position + aBytes + 1);
+            //}
         }
 
-        public override void WriteByte(byte value)
+        public void WriteByte(byte value)
         {
             GrowIfNeeded(1);
-            ContainedStream.WriteByte(value);
+            Source.WriteByte(value);
         }
 
-        public override void Write(byte[] buffer, int offset, int count)
+        public void Write(byte[] buffer, int offset, int count)
         {
             GrowIfNeeded(count);
-            ContainedStream.Write(buffer, offset, count);
+            Source.Write(buffer, offset, count);
         }
-
-        public override System.Threading.Tasks.Task WriteAsync(byte[] buffer, int offset, int count, System.Threading.CancellationToken cancellationToken)
-        {
-            GrowIfNeeded(count);
-            return ContainedStream.WriteAsync(
-                buffer,
-                offset,
-                count,
-                cancellationToken);
-        }
-
-        public override void SetLength(long value)
-        {
-            base.SetLength(value + mrSuperBlock.BaseAddress);
-        }
-
-
-
     }
 }

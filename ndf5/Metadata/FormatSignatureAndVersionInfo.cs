@@ -20,7 +20,7 @@ namespace ndf5.Metadata
         /// <summary>
         /// The location of this FormatSignatureAndVersionInfo in the file
         /// </summary>
-        public long
+        public Offset
             LocationAddress;
 
         /// <summary>
@@ -37,10 +37,10 @@ namespace ndf5.Metadata
         /// <param name="aLocationAddress">A location address where this was parseed</param>
         public FormatSignatureAndVersionInfo(
             byte aSuperBlockVersion,
-            long aLocationAddress = 0)
+            Offset aLocationAddress = null)
         {
             SuperBlockVersion = aSuperBlockVersion;
-            LocationAddress = aLocationAddress;
+            LocationAddress = aLocationAddress ?? new Offset(0);
         }
 
         public byte[] AsBytes => FormatSignature
@@ -52,8 +52,8 @@ namespace ndf5.Metadata
             out FormatSignatureAndVersionInfo aParsed)
         {
             //Record where we are
-            long
-                fLocationAddress = aInputStream.Position;
+            Offset
+            fLocationAddress = new Offset( (ulong)aInputStream.Position );
 
             //Do the Read
             byte[]

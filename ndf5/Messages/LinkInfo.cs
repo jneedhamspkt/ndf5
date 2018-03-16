@@ -35,7 +35,7 @@ namespace ndf5.Messages
         /// “compactly” (as object header messages), this value will be null
         /// </summary>
         /// <value>The fractal heap address.</value>
-        public long? FractalHeapAddress { get; }
+        public Offset FractalHeapAddress { get; }
 
         /// <summary>
         /// This is the address of the version 2 B-tree to index names of links.
@@ -44,7 +44,7 @@ namespace ndf5.Messages
         /// “compactly” (as object header messages), this value will be null
         /// </summary>
         /// <value>The name index BT ree address.</value>
-        public long? NameIndexBTreeAddress { get; }
+        public Offset NameIndexBTreeAddress { get; }
 
         /// <summary>
         /// This is the address of the version 2 B-tree to index creation order
@@ -54,7 +54,7 @@ namespace ndf5.Messages
         /// “compactly” (as object header messages), this value will be null
         /// </summary>
         /// <value>The name index BT ree address.</value>
-        public long? CreationOrderIndexBTreeAddress { get; }
+        public Offset CreationOrderIndexBTreeAddress { get; }
 
         /// <summary>
         /// True if Creation order is tracked
@@ -78,10 +78,10 @@ namespace ndf5.Messages
         /// <param name="aCreationOrderIndexBTreeAddress">The creation order index B Tree address.</param>
         public LinkInfo(
             ulong? aMaximumCreationIndex,
-            long? aFractalHeapAddress,
-            long? aNameIndexBTreeAddress,
+            Offset aFractalHeapAddress,
+            Offset aNameIndexBTreeAddress,
             bool aIsCreationOrderIndexed,
-            long? aCreationOrderIndexBTreeAddress) : base(MessageType.LinkInfo)
+            Offset aCreationOrderIndexBTreeAddress) : base(MessageType.LinkInfo)
         {
             MaximumCreationIndex = aMaximumCreationIndex;
             IsCreationOrderTracked = aMaximumCreationIndex.HasValue;
@@ -129,7 +129,7 @@ namespace ndf5.Messages
                     aReader.ReadOffset(),
                     aReader.ReadOffset(),
                     fCreationOrderIndexed,
-                    fCreationOrderIndexed ? aReader.ReadOffset() : (long?)null);
+                    fCreationOrderIndexed ? aReader.ReadOffset() : (Offset)null);
 
             return fToReturn;
         }
