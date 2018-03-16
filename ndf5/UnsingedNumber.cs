@@ -4,41 +4,41 @@ namespace ndf5
     /// <summary>
     /// Class that encaplates a value decribed by a file superblock
     /// </summary>
-    public abstract class SuperblockNumber : 
+    public abstract class UnsignedNumber : 
         IComparable,
-        IComparable<SuperblockNumber>,
-        IEquatable<SuperblockNumber>
+        IComparable<UnsignedNumber>,
+        IEquatable<UnsignedNumber>
     {
         protected internal readonly ulong
             Value;
 
-        protected SuperblockNumber(ulong aValue)
+        protected UnsignedNumber(ulong aValue)
         {
             this.Value = aValue;
         }
 
 		public int CompareTo(object obj)
         {
-            SuperblockNumber
-                fOther = obj as SuperblockNumber;
+            UnsignedNumber
+                fOther = obj as UnsignedNumber;
             if (ReferenceEquals(null, fOther))
                 return ((IComparable)Value).CompareTo(obj);;
             return Value.CompareTo(fOther.Value);
         }
 
-        public int CompareTo(SuperblockNumber other) => 
+        public int CompareTo(UnsignedNumber other) => 
             this.Value.CompareTo(Value);
 
         public override bool Equals(object obj)
 		{
-            SuperblockNumber
-                fOther = obj as SuperblockNumber;
+            UnsignedNumber
+                fOther = obj as UnsignedNumber;
             if (ReferenceEquals(null, fOther))
-                return false;
+                return Value.Equals(obj);
             return Value.Equals(fOther.Value);
 		}
 
-        public bool Equals(SuperblockNumber other) =>
+        public bool Equals(UnsignedNumber other) =>
             Value.Equals(other.Value);
 
         public override int GetHashCode() => 
@@ -48,8 +48,8 @@ namespace ndf5
             $"{base.GetType()}(Value = {this.Value})";
 
         public static bool operator ==(
-            SuperblockNumber aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aLhs,
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, aRhs))
                 return true;
@@ -61,8 +61,8 @@ namespace ndf5
         }
 
         public static bool operator !=(
-            SuperblockNumber aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aLhs,
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, aRhs))
                 return false;
@@ -74,8 +74,8 @@ namespace ndf5
         }
 
         public static bool operator >(
-            SuperblockNumber aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aLhs,
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, aRhs))
                 return false;
@@ -87,8 +87,8 @@ namespace ndf5
         }
 
         public static bool operator <(
-            SuperblockNumber aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aLhs,
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, aRhs))
                 return false;
@@ -100,8 +100,8 @@ namespace ndf5
         }
 
         public static bool operator >=(
-            SuperblockNumber aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aLhs,
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, aRhs))
                 return true;
@@ -113,8 +113,8 @@ namespace ndf5
         }
 
         public static bool operator <=(
-            SuperblockNumber aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aLhs,
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, aRhs))
                 return true;
@@ -125,10 +125,10 @@ namespace ndf5
             return aLhs.Value <= aRhs.Value;
         }
 
-        public static implicit operator ulong?(SuperblockNumber obj) => 
+        public static implicit operator ulong?(UnsignedNumber obj) => 
             obj?.Value;
 
-        public static explicit operator ulong (SuperblockNumber obj) =>
+        public static explicit operator ulong (UnsignedNumber obj) =>
             obj.Value;
 
 	}

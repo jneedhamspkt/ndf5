@@ -148,7 +148,7 @@ namespace ndf5.Streams
 
         private tFeild ReadFeild<tFeild>(
             byte aSize,
-            Func<ulong,tFeild> aConstruct) where tFeild : SuperblockNumber
+            Func<ulong,tFeild> aConstruct) where tFeild : UnsignedNumber
         {
             byte[]
                 fBuffer = new byte[aSize];

@@ -418,8 +418,8 @@ namespace ndf5.tests.Messages
                     Is.EqualTo(aTreeAddr),
                     "Incorrect value for NameIndexBTreeAddress parsed");
                 Assert.That(
-                    (ulong)fResult.CreationOrderIndexBTreeAddress,
-                    Is.EqualTo(aCreateTreeAddr),
+                    fResult.CreationOrderIndexBTreeAddress,
+                    Is.EqualTo((Offset)aCreateTreeAddr),
                     "Incorrect value for CreationOrderIndexBTreeAddress parsed");
             }
         }

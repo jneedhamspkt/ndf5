@@ -4,7 +4,7 @@ namespace ndf5
     /// <summary>
     /// Decribes a length (usually in bytes) inside an hdf5 file. 
     /// </summary>
-    public class Length : SuperblockNumber
+    public class Length : UnsignedNumber
     {
         public Length(ulong aValue) : base(aValue) { }
 

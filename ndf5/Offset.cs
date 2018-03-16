@@ -4,13 +4,13 @@ namespace ndf5
     /// <summary>
     /// Decribes an offset into an hdf5 file. 
     /// </summary>
-    public class Offset : SuperblockNumber
+    public class Offset : UnsignedNumber
     {
         public Offset(ulong aValue) : base(aValue) { }
 
         public static Offset operator +(
             Offset aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, null) || ReferenceEquals(aRhs, null))
                 throw new NullReferenceException();
@@ -19,7 +19,7 @@ namespace ndf5
 
         public static Offset operator -(
             Offset aLhs,
-            SuperblockNumber aRhs)
+            UnsignedNumber aRhs)
         {
             if (ReferenceEquals(aLhs, null) || ReferenceEquals(aRhs, null))
                 throw new NullReferenceException();
@@ -62,7 +62,7 @@ namespace ndf5
             return new Offset(aLhs.Value - aRhs);
         }
 
-        public static implicit operator Offset(ulong aOffset) =>
+        public static explicit operator Offset(ulong aOffset) =>
             new Offset(aOffset);
     }
 }

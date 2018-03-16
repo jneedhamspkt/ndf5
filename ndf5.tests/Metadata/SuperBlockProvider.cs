@@ -34,7 +34,7 @@ namespace ndf5.tests.Metadata
                 using(BinaryWriter fwriter = new BinaryWriter(fBuffer))
                 {
                     ndf5.Metadata.FormatSignatureAndVersionInfo
-                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, 0);
+                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, (Offset)0);
                     byte[]
                         fFormatBlock = fSig.AsBytes;
                     fwriter.Write(fFormatBlock);
@@ -157,7 +157,7 @@ namespace ndf5.tests.Metadata
                 using (BinaryWriter fwriter = new BinaryWriter(fBuffer))
                 {
                     ndf5.Metadata.FormatSignatureAndVersionInfo
-                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, 0);
+                        fSig = new ndf5.Metadata.FormatSignatureAndVersionInfo((byte)aVerson, (Offset)0);
                     byte[]
                         fFormatBlock = fSig.AsBytes;
                     fwriter.Write(fFormatBlock);
