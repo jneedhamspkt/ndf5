@@ -8,6 +8,7 @@
     <Compile Remove="Class1.cs" />
     <Compile Remove="Infrastructure\BTrees\V2\Type.cs" />
     <Compile Remove="Streams\IStreamResizer.cs" />
+    <Compile Remove="Messages\DataTypeMessageVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\External\TinyIoC\src\TinyIoC\TinyIoC.cs">
@@ -61,6 +62,15 @@
     </Compile>
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40Version2.cs">
       <DependentUpon>Dataspace.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Messages\Datatype.%40Class.cs">
+      <DependentUpon>Datatype.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Messages\Datatype.%40Header.cs">
+      <DependentUpon>Datatype.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Messages\DataType.%40Version.cs">
+      <DependentUpon>Datatype.cs</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>

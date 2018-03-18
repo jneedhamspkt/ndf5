@@ -19,9 +19,7 @@ namespace ndf5.Messages
         /// <returns>The message.</returns>
         /// <param name="aReader">A reader.</param>
         /// <param name="aReadFlags">Flags that describe how to handle this message</param>
-        /// <param name="MessageType">Type of message to read</param>
-        /// <param name="aLocalMessageSize">Number of bytes to read</param>
-        /// <param name="aBytes">Number of bytes that were actually read</param>
+        /// <param name="aMessageType">Type of message to read</param>
         public static Message ReadMessage(
             Hdf5Reader aReader,
             MessageType aMessageType,
