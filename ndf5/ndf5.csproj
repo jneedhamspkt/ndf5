@@ -72,6 +72,9 @@
     <Compile Update="Messages\DataType.%40Version.cs">
       <DependentUpon>Datatype.cs</DependentUpon>
     </Compile>
+    <Compile Update="Messages\DataType.%40Version1.cs">
+      <DependentUpon>Datatype.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="ObjectHeaders\.DS_Store">

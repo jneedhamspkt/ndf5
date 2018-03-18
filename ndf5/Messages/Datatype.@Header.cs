@@ -38,7 +38,7 @@ namespace ndf5.Messages
                 Size = aSize;
             }
 
-            public static Header ReadHeader(Hdf5Reader aStream)
+            public static Header Read(Hdf5Reader aStream)
             {
                 byte[]
                     fBuffer = new byte[HeaderSize];

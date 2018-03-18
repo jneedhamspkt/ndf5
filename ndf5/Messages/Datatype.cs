@@ -3,7 +3,7 @@ using ndf5.Streams;
 
 namespace ndf5.Messages
 {
-    public partial class Datatype : Message
+    public abstract partial class Datatype : Message
     {
         
 
@@ -11,11 +11,22 @@ namespace ndf5.Messages
         {
         }
 
-        internal static Dataspace Read(
+        internal static Datatype Read(
             Hdf5Reader aReader,
             long? aLocalMessageSize,
             out long aBytes)
         {
+            Header 
+            fHeader = Header.Read(aReader);   
+            switch(fHeader.Verson)
+            {
+                case Version.Version1:
+                    return Version1.Read(
+                        aReader, 
+                        aLocalMessageSize, 
+                        out aBytes);
+            }
+
             throw new NotImplementedException();
         }
     }
