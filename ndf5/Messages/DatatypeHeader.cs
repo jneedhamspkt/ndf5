@@ -40,7 +40,7 @@ namespace ndf5.Messages
         {
             byte[]
                 fBuffer = new byte[HeaderSize];
-            if (HeaderSize != aStream.Read(fBuffer, 0, 4))
+            if (4 != aStream.Read(fBuffer, 0, 4))
                 throw new EndOfStreamException();
 
             byte 
