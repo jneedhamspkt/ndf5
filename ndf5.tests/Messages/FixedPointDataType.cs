@@ -14,8 +14,8 @@ namespace ndf5.tests.Messages
     [TestFixture]
     public class FixedPointDataType
     {
-        [Test]
-        public void BasicParsing(
+        [Test, Pairwise]
+        public void Test_Basic_Parsing(
             [Values] uMessages.DatatypeVersion 
                 aVersion,
             [Values(uMessages.ByteOrdering.BigEndian, uMessages.ByteOrdering.LittleEndian)] 
