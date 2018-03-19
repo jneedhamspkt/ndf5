@@ -63,21 +63,12 @@
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40Version2.cs">
       <DependentUpon>Dataspace.cs</DependentUpon>
     </Compile>
-    <Compile Update="Messages\Datatype.%40Class.cs">
-      <DependentUpon>Datatype.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Messages\Datatype.%40Header.cs">
-      <DependentUpon>Datatype.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Messages\DataType.%40Version.cs">
-      <DependentUpon>Datatype.cs</DependentUpon>
-    </Compile>
-    <Compile Update="Messages\DataType.%40Version1.cs">
-      <DependentUpon>Datatype.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="ObjectHeaders\.DS_Store">
+      <DependentUpon>.</DependentUpon>
+    </None>
+    <None Update="Streams\.DS_Store">
       <DependentUpon>.</DependentUpon>
     </None>
   </ItemGroup>

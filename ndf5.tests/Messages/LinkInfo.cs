@@ -55,7 +55,7 @@ namespace ndf5.tests.Messages
                 long fRead;
                 Assert.That(() =>
                     {
-                        ndf5.Messages.Message.ReadMessage(
+                        ndf5.Messages.Message.Read(
                             fReader,
                             uMessages.MessageType.LinkInfo,
                             uMessages.MessageAttributeFlag.None,
@@ -68,7 +68,7 @@ namespace ndf5.tests.Messages
                 fTestSource.Seek(0, SeekOrigin.Begin);
 
                 //Act
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.LinkInfo,
                     uMessages.MessageAttributeFlag.None,
@@ -157,7 +157,7 @@ namespace ndf5.tests.Messages
                 long fRead;
                 Assert.That(() =>
                 {
-                    ndf5.Messages.Message.ReadMessage(
+                    ndf5.Messages.Message.Read(
                         fReader,
                         uMessages.MessageType.LinkInfo,
                         uMessages.MessageAttributeFlag.None,
@@ -170,7 +170,7 @@ namespace ndf5.tests.Messages
                 fTestSource.Seek(0, SeekOrigin.Begin);
 
                 //Act
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.LinkInfo,
                     uMessages.MessageAttributeFlag.None,
@@ -260,7 +260,7 @@ namespace ndf5.tests.Messages
                 long fRead;
                 Assert.That(() =>
                 {
-                    ndf5.Messages.Message.ReadMessage(
+                    ndf5.Messages.Message.Read(
                         fReader,
                         uMessages.MessageType.LinkInfo,
                         uMessages.MessageAttributeFlag.None,
@@ -273,7 +273,7 @@ namespace ndf5.tests.Messages
                 fTestSource.Seek(0, SeekOrigin.Begin);
 
                 //Act
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.LinkInfo,
                     uMessages.MessageAttributeFlag.None,
@@ -366,7 +366,7 @@ namespace ndf5.tests.Messages
                 long fRead;
                 Assert.That(() =>
                 {
-                    ndf5.Messages.Message.ReadMessage(
+                    ndf5.Messages.Message.Read(
                         fReader,
                         uMessages.MessageType.LinkInfo,
                         uMessages.MessageAttributeFlag.None,
@@ -379,7 +379,7 @@ namespace ndf5.tests.Messages
                 fTestSource.Seek(0, SeekOrigin.Begin);
 
                 //Act
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.LinkInfo,
                     uMessages.MessageAttributeFlag.None,

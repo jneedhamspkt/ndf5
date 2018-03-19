@@ -20,14 +20,14 @@ namespace ndf5.Messages
         /// <param name="aReader">A reader.</param>
         /// <param name="aReadFlags">Flags that describe how to handle this message</param>
         /// <param name="aMessageType">Type of message to read</param>
-        public static Message ReadMessage(
+        public static Message Read(
             Hdf5Reader aReader,
             MessageType aMessageType,
             MessageAttributeFlag aReadFlags)
         {
             long 
                 aDummy;
-            return ReadMessage(
+            return Read(
                 aReader,
                 aMessageType,
                 aReadFlags,
@@ -44,7 +44,7 @@ namespace ndf5.Messages
         /// <param name="aMessageType">Type of message to read</param>
         /// <param name="aLocalMessageSize">Number of bytes to read</param>
         /// <param name="aBytes">Number of bytes that were actually read</param>
-        public static Message ReadMessage(
+        public static Message Read(
             Hdf5Reader aReader,
             MessageType aMessageType,
             MessageAttributeFlag aReadFlags,
@@ -65,6 +65,12 @@ namespace ndf5.Messages
                     
                 case MessageType.LinkInfo:
                     return LinkInfo.Read(
+                        aReader,
+                        aLocalMessageSize,
+                        out aBytes);
+                    
+                case MessageType.Datatype:
+                    return Datatype.Read(
                         aReader,
                         aLocalMessageSize,
                         out aBytes);

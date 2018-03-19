@@ -66,7 +66,7 @@ namespace ndf5.tests.Messages
 
                 //Act
                 long fRead;
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.Dataspace,
                     uMessages.MessageAttributeFlag.None,
@@ -140,7 +140,7 @@ namespace ndf5.tests.Messages
 
                 //Act
                 long fRead;
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.Dataspace,
                     uMessages.MessageAttributeFlag.None,
@@ -216,7 +216,7 @@ namespace ndf5.tests.Messages
                 long fRead;
                 Assert.That(() =>
                 {
-                    uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                    uMessages.Message fTest = ndf5.Messages.Message.Read(
                         fReader,
                         uMessages.MessageType.Dataspace,
                         uMessages.MessageAttributeFlag.None,
@@ -270,7 +270,7 @@ namespace ndf5.tests.Messages
 
                 //Act
                 long fRead;
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.Dataspace,
                     uMessages.MessageAttributeFlag.None,
@@ -343,7 +343,7 @@ namespace ndf5.tests.Messages
 
                 //Act
                 long fRead;
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.Dataspace,
                     uMessages.MessageAttributeFlag.None,
@@ -395,7 +395,7 @@ namespace ndf5.tests.Messages
 
                 //Act
                 long fRead;
-                uMessages.Message fTest = ndf5.Messages.Message.ReadMessage(
+                uMessages.Message fTest = ndf5.Messages.Message.Read(
                     fReader,
                     uMessages.MessageType.Dataspace,
                     uMessages.MessageAttributeFlag.None,

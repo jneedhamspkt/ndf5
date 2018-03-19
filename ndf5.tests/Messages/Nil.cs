@@ -24,7 +24,7 @@ namespace ndf5.tests.Messages
             Hdf5Reader
                 fReader = new Hdf5Reader(new System.IO.MemoryStream(new byte[0]), fSuperBlock.Object);
 
-            uMessages.Message fShortTest = ndf5.Messages.Message.ReadMessage(
+            uMessages.Message fShortTest = ndf5.Messages.Message.Read(
                 fReader,
                 uMessages.MessageType.NIL,
                 aFlags);
@@ -48,7 +48,7 @@ namespace ndf5.tests.Messages
                 fReader = new Hdf5Reader(new System.IO.MemoryStream(new byte[0]), fSuperBlock.Object);
 
             long fRead;
-            uMessages.Message fShortTest = ndf5.Messages.Message.ReadMessage(
+            uMessages.Message fShortTest = ndf5.Messages.Message.Read(
                 fReader,
                 uMessages.MessageType.NIL,
                 aFlags,
