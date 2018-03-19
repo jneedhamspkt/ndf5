@@ -8,6 +8,7 @@
     <Compile Remove="Class1.cs" />
     <Compile Remove="Infrastructure\BTrees\V2\Type.cs" />
     <Compile Remove="Streams\IStreamResizer.cs" />
+    <Compile Remove="Messages\DataTypeMessageVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\External\TinyIoC\src\TinyIoC\TinyIoC.cs">
@@ -65,6 +66,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Update="ObjectHeaders\.DS_Store">
+      <DependentUpon>.</DependentUpon>
+    </None>
+    <None Update="Streams\.DS_Store">
       <DependentUpon>.</DependentUpon>
     </None>
   </ItemGroup>

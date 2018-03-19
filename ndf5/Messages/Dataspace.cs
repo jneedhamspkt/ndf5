@@ -45,6 +45,8 @@ namespace ndf5.Messages
             long? aLocalMessageSize, 
             out long aBytes)
         {
+            if (aLocalMessageSize.HasValue && aLocalMessageSize.Value < DSHeader.Size)
+                throw new ArgumentException("Specified Local Message Size not long enough");
             DSHeader
                 fHeader = DSHeader.Read(aReader);
             long
