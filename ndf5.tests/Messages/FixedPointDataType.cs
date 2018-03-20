@@ -270,18 +270,18 @@ namespace ndf5.tests.Messages
                         0x10, 0x00, 0x00,
                     });
 
-                    //fTestSource.Seek(0, SeekOrigin.Begin);
+                    fTestSource.Seek(0, SeekOrigin.Begin);
 
-                    //Assert.That(() =>
-                    //{
-                    //    ndf5.Messages.Message.Read(
-                    //        fReader,
-                    //        uMessages.MessageType.Datatype,
-                    //        uMessages.MessageAttributeFlag.None,
-                    //        12,
-                    //        out fReadBytes);
-                    //}, Throws.Exception.TypeOf(typeof(System.IO.EndOfStreamException)),
-                    //"Length not checked");
+                    Assert.That(() =>
+                    {
+                        ndf5.Messages.Message.Read(
+                            fReader,
+                            uMessages.MessageType.Datatype,
+                            uMessages.MessageAttributeFlag.None,
+                            12,
+                            out fReadBytes);
+                    }, Throws.Exception.TypeOf(typeof(System.IO.EndOfStreamException)),
+                    "Length not checked");
                 }
             }
         }

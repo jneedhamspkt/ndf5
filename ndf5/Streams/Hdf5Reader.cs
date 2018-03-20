@@ -152,7 +152,8 @@ namespace ndf5.Streams
         {
             byte[]
                 fBuffer = new byte[aSize];
-            Source.Read(fBuffer, 0, aSize);
+            if(aSize != Source.Read(fBuffer, 0, aSize))
+                throw new EndOfStreamException();
             switch (aSize)
             {
                 case 2:
@@ -208,7 +209,8 @@ namespace ndf5.Streams
         {
             byte[]
                 fBuffer = new byte[2];
-            Source.Read(fBuffer, 0, 2);
+            if(2 != Source.Read(fBuffer, 0, 2))
+                throw new EndOfStreamException();
             ushort
                 fShort = (ushort)(
                     (fBuffer[0]) +
@@ -224,7 +226,8 @@ namespace ndf5.Streams
         {
             byte[]
                 fBuffer = new byte[4];
-            Source.Read(fBuffer, 0, 4);
+            if( 4 != Source.Read(fBuffer, 0, 4) )
+                throw new EndOfStreamException();
             uint fUint = (uint)(
                 (fBuffer[0]) +
                 (fBuffer[1] << 8) +
@@ -241,7 +244,8 @@ namespace ndf5.Streams
         {
             byte[]
                 fBuffer = new byte[8];
-            Source.Read(fBuffer, 0, 8);
+            if(8 != Source.Read(fBuffer, 0, 8))
+                throw new EndOfStreamException();
             ulong fLow = (ulong)(
                             (fBuffer[0]) |
                             (fBuffer[1] << 8) |
