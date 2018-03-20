@@ -61,29 +61,70 @@ namespace ndf5.tests.Metadata
                     switch(aOffset)
                     {
                         case 2:
+                            //Superblock Feilds
                             fwriter.Write((ushort)0x1234);
                             fwriter.Write((ushort)0x5678);
                             fwriter.Write((ushort)0x9ABC);
                             fwriter.Write((ushort)0xDEF0);
+
+                            //Symbol Table Entry
+                            fwriter.Write((ushort)0x0AAA);
+                            fwriter.Write((ushort)0x0BBB);
+                            fwriter.Write((uint)0x0); //Cache Type
+                            fwriter.Write((uint)0x0); //Reserved
+                            fwriter.Write(new byte[]
+                            {
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00
+                            });
                             break;
 
                         case 4:
+                            //Superblock Feilds
                             fwriter.Write((uint)0x10203040);
                             fwriter.Write((uint)0x05060708);
                             fwriter.Write((uint)0x90A0B0C0);
                             fwriter.Write((uint)0x0D0E0F00);
+
+                            //Symbol Table Entry
+                            fwriter.Write((uint)0x0AAAAAAA);
+                            fwriter.Write((uint)0x0BBBBBBB);
+                            fwriter.Write((uint)0x0); //Cache Type
+                            fwriter.Write((uint)0x0); //Reserved
+                            fwriter.Write(new byte[]
+                            {
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00
+                            });
                             break;
 
                         case 8:
+                            //Superblock Feilds
                             fwriter.Write((ulong)0x10203040AAAAAAAA);
                             fwriter.Write((ulong)0x4BBBBBBB05060708);
                             fwriter.Write((ulong)0x50A0B0C0CCCCCCCC);
                             fwriter.Write((ulong)0x1DDDDDDD0D0E0F00);
+
+                            //Symbol Table Entry
+                            fwriter.Write((ulong)0x0AAAAAAAAAAAAAAA);
+                            fwriter.Write((ulong)0x0BBBBBBBBBBBBBBB);
+                            fwriter.Write((uint)0x0); //Cache Type
+                            fwriter.Write((uint)0x0); //Reserved
+                            fwriter.Write(new byte[]
+                            {
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 0x00
+                            });
                             break;
                     }
 
                     fwriter.Flush();
-
 
                     //Act
                     ndf5.Metadata.SuperBlockProvider
@@ -115,6 +156,7 @@ namespace ndf5.tests.Metadata
                             Assert.That((ushort)fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x5678), "Incorrect Address of File Free space Info");
                             Assert.That((ushort)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x9ABC), "Incorrect End of File Address");
                             Assert.That((ushort)fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0xDEF0), "Incorrect Driver Information Block Address");
+                            Assert.That((ushort)fSuperBlock.RootGroupAddress, Is.EqualTo(0x0BBB), "Incorrect Root Group Address");
                             break;
 
                         case 4:
@@ -122,6 +164,7 @@ namespace ndf5.tests.Metadata
                             Assert.That((uint)fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x05060708), "Incorrect Address of File Free space Info");
                             Assert.That((uint)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x90A0B0C0), "Incorrect End of File Address");
                             Assert.That((uint)fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x0D0E0F00), "Incorrect Driver Information Block Address");
+                            Assert.That((uint)fSuperBlock.RootGroupAddress, Is.EqualTo(0x0BBBBBBB), "Incorrect Root Group Address");
                             break;
 
                         case 8:
@@ -129,6 +172,7 @@ namespace ndf5.tests.Metadata
                             Assert.That((ulong)fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x4BBBBBBB05060708), "Incorrect Address of File Free space Info");
                             Assert.That((ulong)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x50A0B0C0CCCCCCCC), "Incorrect End of File Address");
                             Assert.That((ulong)fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Driver Information Block Address");
+                            Assert.That((ulong)fSuperBlock.RootGroupAddress, Is.EqualTo(0x0BBBBBBBBBBBBBBB), "Incorrect Root Group Address");
                             break;
                     }
                 }
@@ -224,24 +268,26 @@ namespace ndf5.tests.Metadata
                     {
                         case 2:
                             Assert.That((ushort)fSuperBlock.BaseAddress, Is.EqualTo(0x1234), "Incorrect Base Address");
-                            //Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x5678), "Incorrect Address of File Free space Info");
+                            // TODO: Test Superblock extension
+                            //Assert.That(fSuperBlock.SuperblockExtensionAddress, Is.EqualTo(0x5678), "Incorrect Address of File Free space Info");
                             Assert.That((ushort)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x9ABC), "Incorrect End of File Address");
-                            //Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0xDEF0), "Incorrect Driver Information Block Address");
+                            Assert.That((ulong)fSuperBlock.RootGroupAddress, Is.EqualTo(0xDEF0), "Incorrect Root Group address");
                             break;
 
                         case 4:
                             Assert.That((uint)fSuperBlock.BaseAddress, Is.EqualTo(0x10203040), "Incorrect Base Address");
-                            //Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x05060708), "Incorrect Address of File Free space Info");
+                            // TODO: Test Superblock extension
+                            //Assert.That(fSuperBlock.SuperblockExtensionAddress, Is.EqualTo(0x05060708), "Incorrect Address of File Free space Info");
                             Assert.That((uint)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x90A0B0C0), "Incorrect End of File Address");
-                            //Assert.That(fSuperBlock.DriverInformationBlockAddress, Is.EqualTo(0x0D0E0F00), "Incorrect Driver Information Block Address");
+                            Assert.That((ulong)fSuperBlock.RootGroupAddress, Is.EqualTo(0x0D0E0F00), "Incorrect Root Group address");
                             break;
 
                         case 8:
                             Assert.That((ulong)fSuperBlock.BaseAddress, Is.EqualTo(0x10203040AAAAAAAA), "Incorrect Base Address");
                             // TODO: Test Superblock extension
-                            //Assert.That(fSuperBlock.FileFreespaceInfoAddress, Is.EqualTo(0x4BBBBBBB05060708), "Incorrect Address of File Free space Info");
+                            //Assert.That((ulong)fSuperBlock.SuperblockExtensionAddress, Is.EqualTo(0x4BBBBBBB05060708), "Incorrect Address of File Free space Info");
                             Assert.That((ulong)fSuperBlock.EndOfFileAddress, Is.EqualTo(0x50A0B0C0CCCCCCCC), "Incorrect End of File Address");
-                            Assert.That((ulong)fSuperBlock.RootGroupAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Super block address");
+                            Assert.That((ulong)fSuperBlock.RootGroupAddress, Is.EqualTo(0x1DDDDDDD0D0E0F00), "Incorrect Root Group address");
                             break;
                     }
                 }
