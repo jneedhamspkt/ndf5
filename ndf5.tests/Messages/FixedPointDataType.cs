@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 using uTest = ndf5.Messages.FixedPointDataType;
 using uMessages = ndf5.Messages;
-
+using ndf5.Objects;
 
 namespace ndf5.tests.Messages
 {
@@ -18,8 +18,8 @@ namespace ndf5.tests.Messages
         public void Test_Basic_Parsing(
             [Values] uMessages.DatatypeVersion 
                 aVersion,
-            [Values(uMessages.ByteOrdering.BigEndian, uMessages.ByteOrdering.LittleEndian)] 
-                uMessages.ByteOrdering aByteOrdering,
+            [Values(ByteOrdering.BigEndian, ByteOrdering.LittleEndian)] 
+                ByteOrdering aByteOrdering,
             [Values(0, 1)]byte 
                 aLowPaddingBit,
             [Values(0, 1)] byte 
@@ -39,7 +39,7 @@ namespace ndf5.tests.Messages
             {
                 fWriter.Write((byte)((byte)aVersion << 4));
                 fWriter.Write((byte)(
-                    (aByteOrdering == uMessages.ByteOrdering.BigEndian ? 1 : 0) |
+                    (aByteOrdering == ByteOrdering.BigEndian ? 1 : 0) |
                     (aLowPaddingBit << 1) |
                     (aHighPaddingBit << 2) |
                     (aIsSigned ? 0x8 : 0)));
@@ -166,7 +166,7 @@ namespace ndf5.tests.Messages
                         "Incorrect Data class");
                     Assert.That(
                         fResult.ByteOrdering,
-                        Is.EqualTo(uMessages.ByteOrdering.LittleEndian),
+                        Is.EqualTo(ByteOrdering.LittleEndian),
                         "Incorrect byte ordering");
                     Assert.That(
                         fResult.LowPaddingBit,

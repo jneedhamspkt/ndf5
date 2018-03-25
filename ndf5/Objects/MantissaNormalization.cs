@@ -1,5 +1,5 @@
 ﻿using System;
-namespace ndf5.Messages
+namespace ndf5.Objects
 {
     /// <summary>
     /// Mantissa normalization, used byt <see cref="FloatingPointDataType"/>
