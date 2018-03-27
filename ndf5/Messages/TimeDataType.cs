@@ -72,7 +72,7 @@ namespace ndf5.Messages
             long? aLocalMessageSize,
             out long aBytes)
         {
-            if (aHeader.Class != DatatypeClass.FixedPoint)
+            if (aHeader.Class != DatatypeClass.Time)
                 throw new ArgumentException(
                     $"aHeader must be for type {nameof(DatatypeClass.Time)}");
 
