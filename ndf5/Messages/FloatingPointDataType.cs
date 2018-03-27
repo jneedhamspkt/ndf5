@@ -75,7 +75,7 @@ namespace ndf5.Messages
             byte aExponentSize,
             byte aMantissaLocation,
             byte aMantissaSize,
-            uint aExponentBias) : base(DatatypeClass.FixedPoint, aSize)
+            uint aExponentBias) : base(DatatypeClass.FloatingPoint, aSize)
         {
             if (!(aHighPaddingBit == 0 || aHighPaddingBit == 1))
                 throw new ArgumentException(
@@ -206,9 +206,9 @@ namespace ndf5.Messages
             long? aLocalMessageSize,
             out long aBytes)
         {
-            if (aHeader.Class != DatatypeClass.FixedPoint)
+            if (aHeader.Class != DatatypeClass.FloatingPoint)
                 throw new ArgumentException(
-                    $"aHeader must be for type {nameof(DatatypeClass.FixedPoint)}");
+                    $"aHeader must be for type {nameof(DatatypeClass.FloatingPoint)}");
 
             if(aLocalMessageSize.HasValue && aLocalMessageSize < mcAddionalSize)
                 throw new ArgumentException("Specified Local Message Size not long enough");
@@ -228,7 +228,7 @@ namespace ndf5.Messages
                 case Flags.ByteOrderLow:
                     fByteOrdering = ByteOrdering.BigEndian;
                     break;
-                case Flags.ByteOrderHigh:
+                case Flags.ByteOrderMask:
                     fByteOrdering = ByteOrdering.VAXOrder;
                     break;
                 default :
@@ -250,7 +250,7 @@ namespace ndf5.Messages
             fMantissaNormalization = (MantissaNormalization)fMantissaNormFlags;
 
             ushort
-                fSignLocation = (ushort) ((0xFFFF00 & aHeader.Flags) >> 16);
+                fSignLocation = (ushort) ((0x00FF00 & aHeader.Flags) >> 8);
 
             ushort
                 fBitOffset = aReader.ReadUInt16(),
