@@ -1,5 +1,5 @@
 ﻿using System;
-namespace ndf5.Messages
+namespace ndf5.Objects
 {
     public enum ByteOrdering
     {

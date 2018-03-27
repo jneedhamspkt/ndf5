@@ -54,15 +54,6 @@
     <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\DataspaceMessage.%40Version2.cs">
       <DependentUpon>Dataspace.cs</DependentUpon>
     </Compile>
-    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40DSHeader.cs">
-      <DependentUpon>Dataspace.cs</DependentUpon>
-    </Compile>
-    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40Version1.cs">
-      <DependentUpon>Dataspace.cs</DependentUpon>
-    </Compile>
-    <Compile Condition=" '$(EnableDefaultCompileItems)' == 'true' " Update="Messages\Dataspace.%40Version2.cs">
-      <DependentUpon>Dataspace.cs</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Update="ObjectHeaders\.DS_Store">

@@ -1,5 +1,5 @@
 ﻿using System;
-
+using ndf5.Objects;
 using ndf5.Streams;
 
 namespace ndf5.Messages

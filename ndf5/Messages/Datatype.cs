@@ -63,6 +63,14 @@ namespace ndf5.Messages
                         out fAdditionalBytes);
                     break;
 
+                case DatatypeClass.FloatingPoint:
+                    fMessage = FloatingPointDataType.ReadMessage(
+                        fHeader,
+                        aReader,
+                        fBodySize,
+                        out fAdditionalBytes);
+                    break;
+
 
                 default:
                     // We shoudl never git her, as header parsing should check 
