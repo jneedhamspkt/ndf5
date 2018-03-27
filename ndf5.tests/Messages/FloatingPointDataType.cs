@@ -80,12 +80,61 @@ namespace ndf5.tests.Messages
                 {
                     long 
                         fReadBytes;
-                    uTest fResult = ndf5.Messages.Message.Read(
-                        fReader,
-                        uMessages.MessageType.Datatype,
-                        uMessages.MessageAttributeFlag.None,
-                        null,
-                        out fReadBytes) as uTest;
+                    uTest
+                        fExpected = new uTest(
+                            aSize,
+                            aByteOrdering,
+                            aHighPaddingBit,
+                            aLowPaddingBit,
+                            aInternalPaddingBit,
+                            aSignBitLocation,
+                            aBitOffset,
+                            aBitPrecision,
+                            aExponentLocation,
+                            aExponentSize,
+                            aMantissaLocation,
+                            aMantissaSize,
+                            aExponentBias),
+                        fResult = ndf5.Messages.Message.Read(
+                            fReader,
+                            uMessages.MessageType.Datatype,
+                            uMessages.MessageAttributeFlag.None,
+                            null,
+                            out fReadBytes) as uTest;
+                    
+                    Assert.That(
+                        fResult, 
+                        Is.EqualTo(fExpected), 
+                        "Equality check failed");
+
+                    Assert.That(
+                        fResult,
+                        Is.Not.EqualTo(new uTest(
+                            aSize,
+                            aByteOrdering,
+                            aHighPaddingBit,
+                            aLowPaddingBit,
+                            aInternalPaddingBit,
+                            aSignBitLocation,
+                            aBitOffset,
+                            aBitPrecision,
+                            aExponentLocation,
+                            aExponentSize,
+                            aMantissaLocation,
+                            aMantissaSize,
+                            aExponentBias + 1)),
+                        "Inequality Check Failed");
+
+                    Assert.That(
+                        fResult,
+                        Is.Not.EqualTo(null),
+                        "Null Inequality Check Failed");
+
+                    Assert.That(
+                        fResult.GetHashCode(),
+                        Is.EqualTo(fExpected.GetHashCode()),
+                        "Hash Code Equality check failed");
+                          
                     Assert.That(
                         fResult,
                         Is.Not.Null,

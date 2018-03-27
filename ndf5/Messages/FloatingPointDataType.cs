@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ndf5.Objects;
 using ndf5.Streams;
 
@@ -104,6 +105,20 @@ namespace ndf5.Messages
             ExponentBias = aExponentBias;
         }
 
+        protected override IEnumerable<object> EqualityMembers => new object[]
+        {
+            ByteOrdering,
+            HighPaddingBit,
+            LowPaddingBit,
+            SignLocation,
+            BitOffset,
+            BitPrecision,
+            ExponentLocation,
+            ExponentSize,
+            MantissaLocation,
+            MantissaSize,
+            ExponentBias
+        };
 
         /// <summary>
         /// Gets the byte ordering for the described fixed point numbers

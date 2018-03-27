@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using ndf5.Streams;
 
 namespace ndf5.Messages
 {
-    public abstract partial class Datatype : Message
+    public abstract partial class Datatype : 
+        Message,
+        IEquatable<Datatype>
     {
         internal protected Datatype(
             DatatypeClass aClass,
@@ -79,6 +83,39 @@ namespace ndf5.Messages
             }
             aBytes = DatatypeHeader.HeaderSize + fAdditionalBytes;
             return fMessage;
+        }
+
+        protected abstract IEnumerable<object> EqualityMembers { get; }
+
+		public override int GetHashCode()
+		{
+            return new object[]{Class, Size}.Concat(EqualityMembers)
+                       .Select(a => a.GetHashCode())
+                       .Aggregate((aAcc, aNext) => (aAcc * 397) ^ aNext);
+		}
+
+		public override bool Equals(object obj)
+		{
+            Datatype fOther = obj as Datatype;
+            return this.Equals(fOther);
+		}
+
+		public bool Equals(Datatype other)
+        {
+            if(other.IsNull())
+                return false;
+            if (this.Class != other.Class)
+                return false;
+            if (this.Size != other.Size)
+                return false;
+            object[]
+                fMyMembers = EqualityMembers.ToArray(),
+                fOtherMembers = other.EqualityMembers.ToArray();
+            if (fMyMembers.Length != fOtherMembers.Length)
+                return false;
+            return fMyMembers
+                .Zip(fOtherMembers, (a, b) => a.Equals(b))
+                .All(a => a);
         }
     }
 }

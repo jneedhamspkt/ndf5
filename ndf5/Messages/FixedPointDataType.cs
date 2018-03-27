@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ndf5.Objects;
 using ndf5.Streams;
 
@@ -70,12 +71,21 @@ namespace ndf5.Messages
             BitPrecision = aBitPrecision;
         }
 
+        protected override IEnumerable<object> EqualityMembers => new object[]
+        {
+            ByteOrdering,
+            HighPaddingBit,
+            LowPaddingBit,
+            IsSigned,
+            BitOffset,
+            BitPrecision
+        };
 
-        /// <summary>
-        /// Gets the byte ordering for the described fixed point numbers
-        /// </summary>
-        /// <value>The byte ordering.</value>
-        public ByteOrdering
+		/// <summary>
+		/// Gets the byte ordering for the described fixed point numbers
+		/// </summary>
+		/// <value>The byte ordering.</value>
+		public ByteOrdering
             ByteOrdering { get; }
 
         /// <summary>
