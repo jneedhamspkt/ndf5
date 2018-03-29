@@ -27,7 +27,7 @@ namespace ndf5.Messages
         public StringDataType(
             uint aSize,
             StringPadding aStringPadding,
-            StringEncoding aStringEncoding) : base(DatatypeClass.Time, aSize)
+            StringEncoding aStringEncoding) : base(DatatypeClass.String, aSize)
         {
             StringPadding = aStringPadding;
             StringEncoding = aStringEncoding;
@@ -52,21 +52,21 @@ namespace ndf5.Messages
             long? aLocalMessageSize,
             out long aBytes)
         {
-            if (aHeader.Class != DatatypeClass.Time)
+            if (aHeader.Class != DatatypeClass.String)
                 throw new ArgumentException(
-                    $"aHeader must be for type {nameof(DatatypeClass.Time)}");
+                    $"aHeader must be for type {nameof(DatatypeClass.String)}");
 
             if(aLocalMessageSize.HasValue && aLocalMessageSize < 0)
                 throw new ArgumentException("Specified Local Message Size not long enough");
 
             byte
-                fStringPadding = (byte)(aHeader.Flags | 0x0F),
-                fStringEncoding = (byte)((aHeader.Flags | 0xF0) >> 4);
+                fStringPadding = (byte)(aHeader.Flags & 0x0F),
+                fStringEncoding = (byte)((aHeader.Flags & 0xF0) >> 4);
 
             if (fStringPadding > (byte)StringPadding.SpacePad)
-                throw new ArgumentException($"Invalid {nameof(StringPadding)}");
+                throw new ArgumentException($"Invalid {nameof(StringPadding)}: {fStringPadding}");
             if (fStringEncoding > (byte)StringEncoding.UTF8)
-                throw new ArgumentException($"Invalid {nameof(StringEncoding)}");
+                throw new ArgumentException($"Invalid {nameof(StringEncoding)}: {fStringEncoding}");
 
             aBytes = 0;// No addional Read
             return new StringDataType(

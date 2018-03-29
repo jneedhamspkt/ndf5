@@ -77,6 +77,11 @@ namespace ndf5.tests.Messages
                             uMessages.MessageAttributeFlag.None,
                             null,
                             out fReadBytes) as uTest;
+                    
+                    Assert.That(
+                        fResult,
+                        Is.Not.Null,
+                        "Incorrect Message Type returned");
 
                     Assert.That(
                         fResult,
@@ -105,10 +110,6 @@ namespace ndf5.tests.Messages
                         Is.EqualTo(fExpected.GetHashCode()),
                         "Hash Code Equality check failed");
                     
-                    Assert.That(
-                        fResult,
-                        Is.Not.Null,
-                        "Incorrect Message Type returned");
                     Assert.That(
                         fReadBytes,
                         Is.EqualTo(12),
