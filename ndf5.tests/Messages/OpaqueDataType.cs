@@ -106,6 +106,11 @@ namespace ndf5.tests.Messages
                         "Wrong number of bytes read");
 
                     Assert.That(
+                        fReadBytes % 8, 
+                        Is.EqualTo(0),
+                        "Read should be a mutiple of 8");
+
+                    Assert.That(
                         fResult.Size,
                         Is.EqualTo(aSize),
                         "Incorrect Data Element Size");
