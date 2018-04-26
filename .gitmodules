@@ -1,0 +1,4 @@
+[submodule "External/TinyIoC"]
+	path = External/TinyIoC
+	url = https://jneedhamspkt@github.com/jneedhamspkt/TinyIoC.git
+	branch = NetStandardFix
