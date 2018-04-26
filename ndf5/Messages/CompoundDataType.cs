@@ -102,7 +102,7 @@ namespace ndf5.Messages
 
             aBytes = fTagSize;
 
-            MemberEntry
+            IEnumerable<MemberEntry>
                 fMembers = null;
 
 
