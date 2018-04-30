@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ndf5.Streams;
+using System.IO;
 
 namespace ndf5.Messages
 {
@@ -79,7 +80,41 @@ namespace ndf5.Messages
         {
             if (aHeader.Class != DatatypeClass.Array)
                 throw new ArgumentException(
-                    $"aHeader must be for type {nameof(DatatypeClass.Opaque)}");
+                    $"aHeader must be for type {nameof(DatatypeClass.Array)}");
+            bool
+                fReadPermutaions;
+            switch(aHeader.Version)
+            {
+                case DatatypeVersion.Version1:
+                    throw new InvalidDataException("Arrays are not supported in verion 1");
+                    break;
+                case DatatypeVersion.Version2:
+                    fReadPermutaions = true;
+                    break;
+                default:
+                    fReadPermutaions = false;
+                    break;
+            }
+
+            byte
+                fDimensionality = aReader.ReadByte();
+            aReader.Seek(3, System.IO.SeekOrigin.Current); // Reserved bytes
+
+            uint[]
+                fDimeensions = Enumerable
+                    .Range(0, fDimensionality)
+                    .Select(a=>aReader.ReadUInt32())
+                    .ToArray();
+
+            if(fReadPermutaions)
+            {
+                if (!fDimeensions.All(a => a == aReader.ReadUInt32()))
+                    throw new Exceptions.Hdf5UnsupportedFeature("Custom permutations not supported");
+            }
+
+            Datatype
+            fBaseType = Datatype.Read ()
+
 
             throw new NotImplementedException();
 
