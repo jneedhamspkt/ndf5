@@ -9,7 +9,7 @@ namespace ndf5.Messages
     /// <summary>
     /// Recursive data type which notates an array of elements of a base type
     /// </summary>
-    public class ArrayType : Datatype
+    public class ArrayDataType : Datatype
     {
         private readonly uint[]
             mrDimensionSizes;
@@ -23,7 +23,7 @@ namespace ndf5.Messages
         /// <param name="aHeader">IDatatypeHeader with the basic data about this type</param>
         /// <param name="aDimensionSizes">Size of each dimension in this array</param>
         /// <param name="aBaseType">Type of the data elements of this array</param>
-        public ArrayType(
+        public ArrayDataType(
             IDatatypeHeader aHeader,
             uint[] aDimensionSizes,
             Datatype aBaseType) : this(aHeader.Size, aDimensionSizes, aBaseType)
@@ -40,7 +40,7 @@ namespace ndf5.Messages
         /// <param name="aSize">The size in bytes of this array</param>
         /// <param name="aDimensionSizes">Size of each dimension in this array</param>
         /// <param name="aBaseType">Type of the data elements of this array</param>
-        public ArrayType(
+        public ArrayDataType(
             uint aSize,
             uint[] aDimensionSizes,
             Datatype aBaseType) : base(DatatypeClass.Array, aSize)
@@ -83,6 +83,8 @@ namespace ndf5.Messages
                     $"aHeader must be for type {nameof(DatatypeClass.Array)}");
             bool
                 fReadPermutaions;
+            long
+                fSize = sizeof(uint);
             switch(aHeader.Version)
             {
                 case DatatypeVersion.Version1:
@@ -105,18 +107,28 @@ namespace ndf5.Messages
                     .Range(0, fDimensionality)
                     .Select(a=>aReader.ReadUInt32())
                     .ToArray();
-
+            fSize += fDimensionality * sizeof(uint);
             if(fReadPermutaions)
             {
                 if (!fDimeensions.All(a => a == aReader.ReadUInt32()))
                     throw new Exceptions.Hdf5UnsupportedFeature("Custom permutations not supported");
+                fSize += fDimensionality * sizeof(uint);
             }
 
+            long?
+                fBaseLocalmessageSize = aLocalMessageSize;
+            if(fBaseLocalmessageSize.HasValue)
+                fBaseLocalmessageSize -= fSize;
+            
+
+            long
+                fBaseTypeSize;
             Datatype
-            fBaseType = Datatype.Read ()
+                fBaseType = Datatype.Read(aReader, fBaseLocalmessageSize ,out fBaseTypeSize);
 
+            aBytes = fSize + fBaseTypeSize;
 
-            throw new NotImplementedException();
+            return new ArrayDataType(aHeader, fDimeensions, fBaseType);
 
         }
     }
