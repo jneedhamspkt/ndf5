@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ndf5.Streams;
 using System.IO;
+using ndf5.Exceptions;
 
 namespace ndf5.Messages
 {
@@ -26,7 +27,7 @@ namespace ndf5.Messages
         public ArrayDataType(
             IDatatypeHeader aHeader,
             uint[] aDimensionSizes,
-            Datatype aBaseType) : this(aHeader.Size, aDimensionSizes, aBaseType)
+			Datatype aBaseType) : this(aDimensionSizes, aBaseType, aHeader.Size)
         {
             if (aHeader.Class != DatatypeClass.Array)
                 throw new ArgumentException(
@@ -41,9 +42,14 @@ namespace ndf5.Messages
         /// <param name="aDimensionSizes">Size of each dimension in this array</param>
         /// <param name="aBaseType">Type of the data elements of this array</param>
         public ArrayDataType(
-            uint aSize,
             uint[] aDimensionSizes,
-            Datatype aBaseType) : base(DatatypeClass.Array, aSize)
+			Datatype aBaseType,
+			uint? aSize = null) : base(
+				DatatypeClass.Array,
+				aSize ?? (aDimensionSizes.Any(a => a == 0) 
+				    ? 1 
+				    : aBaseType.Size * aDimensionSizes.Aggregate(
+				          (uint)1, (uint arg1, uint arg2) => arg1 * arg2 )))
         {
             mrDimensionSizes = aDimensionSizes;
             mrBaseType = aBaseType;
@@ -88,11 +94,14 @@ namespace ndf5.Messages
             switch(aHeader.Version)
             {
                 case DatatypeVersion.Version1:
-                    throw new InvalidDataException("Arrays are not supported in verion 1");
-                    break;
+                    throw new UnknownMessageVersion<ArrayDataType>(
+                        (int)aHeader.Version,
+                        "Arrays are not supported in verion 1");
+
                 case DatatypeVersion.Version2:
                     fReadPermutaions = true;
                     break;
+
                 default:
                     fReadPermutaions = false;
                     break;
@@ -107,11 +116,12 @@ namespace ndf5.Messages
                     .Range(0, fDimensionality)
                     .Select(a=>aReader.ReadUInt32())
                     .ToArray();
+            
             fSize += fDimensionality * sizeof(uint);
             if(fReadPermutaions)
             {
-                if (!fDimeensions.All(a => a == aReader.ReadUInt32()))
-                    throw new Exceptions.Hdf5UnsupportedFeature("Custom permutations not supported");
+				if (!Enumerable.Range(0, fDimeensions.Length).All(a => a == aReader.ReadUInt32()))
+                    throw new Hdf5UnsupportedFeature("Custom permutations not supported");
                 fSize += fDimensionality * sizeof(uint);
             }
 

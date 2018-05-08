@@ -108,6 +108,15 @@ namespace ndf5.Messages
                     break;
 
 
+
+                case DatatypeClass.Array:
+                    fMessage = ArrayDataType.ReadMessage(
+                        fHeader,
+                        aReader,
+                        fBodySize,
+                        out fAdditionalBytes);
+                    break;
+
                 default:
                     // We shoudl never git her, as header parsing should check 
                     // for known versions of the header
