@@ -76,7 +76,7 @@ namespace ndf5.Messages
         /// </summary>
         /// <value>The type of the base.</value>
         public Datatype 
-            BaseType => BaseType;
+		    BaseType => mrBaseType;
 
         internal static Datatype ReadMessage(
             DatatypeHeader aHeader,

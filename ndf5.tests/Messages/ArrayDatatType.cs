@@ -8,6 +8,7 @@ using NUnit.Framework;
 
 using uTest = ndf5.Messages.ArrayDataType;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace ndf5.tests.Messages
 {
@@ -119,7 +120,15 @@ namespace ndf5.tests.Messages
                         0,
                         true,
                         0,
-                        16);
+                        16),
+				fNonEqualBaseType = new ndf5.Messages.FixedPointDataType(
+                        4,
+                        Objects.ByteOrdering.LittleEndian,
+                        0,
+                        0,
+                        true,
+                        0,
+                        32);
 
                     fTestSource.Seek(0L, SeekOrigin.Begin);
 
@@ -147,10 +156,52 @@ namespace ndf5.tests.Messages
                             null,
                             out fReadBytes) as uTest;
 					
-					//Assert.That(
-                        //fResult,
-                        //Is.EqualTo(fExpected),
-                        //"Equality check failed");
+					Assert.That(
+                        fResult,
+                        Is.EqualTo(fExpected),
+                        "Equality check failed");
+
+					Assert.That(
+						fResult.BaseType,
+						Is.EqualTo(fBaseType),
+                        "Incorrect Base Type");
+
+					Assert.That(
+						fResult.DimensionSizes.ToArray(),
+						Is.EquivalentTo(fDimensions.ToArray()),
+                        "Incorrect Dimensions");
+					
+					Assert.That(
+						fResult.Size,
+						Is.EqualTo(fSize),
+                        "Incorrect Size");
+
+					Assert.That(
+                        fResult,
+						Is.Not.EqualTo(
+							new uTest(
+								fDimensions.Concat(new uint[]{1}).ToArray(),
+                                fBaseType,
+								fSize)),
+						"Inequality check failed (Dimensions)");
+
+					Assert.That(
+                        fResult,
+                        Is.Not.EqualTo(
+                            new uTest(
+								fDimensions.ToArray(),
+								fNonEqualBaseType,
+                                fSize)),
+						"Inequality check failed (Base Type)");
+
+					Assert.That(
+                        fResult,
+                        Is.Not.EqualTo(
+                            new uTest(
+                                fDimensions.ToArray(),
+                                fBaseType,
+                                fSize+1)),
+						"Inequality check failed (Size)");
 
                 }
             }
